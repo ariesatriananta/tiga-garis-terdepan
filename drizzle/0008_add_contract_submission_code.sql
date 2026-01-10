@@ -1,0 +1,1 @@
+ALTER TABLE "contracts" ADD COLUMN "submission_code" text NOT NULL DEFAULT '420';

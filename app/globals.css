@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* TGT Brand: #A51E23 (red), #1E1F1F (black), #D3B243 (gold) */
+    --background: 0 0% 98%;
+    --foreground: 180 2% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 180 2% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 2% 12%;
+
+    --primary: 358 69% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 46 62% 90%;
+    --secondary-foreground: 180 2% 12%;
+
+    --muted: 0 0% 95%;
+    --muted-foreground: 180 2% 40%;
+
+    --accent: 46 62% 55%;
+    --accent-foreground: 180 2% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 358 69% 38%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 180 2% 12%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 180 2% 12%;
+    --sidebar-accent: 358 69% 38%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 180 2% 18%;
+    --sidebar-ring: 46 62% 55%;
+
+    --chart-1: 358 69% 38%;
+    --chart-2: 46 62% 55%;
+    --chart-3: 180 2% 12%;
+    --chart-4: 142 71% 45%;
+    --chart-5: 38 92% 50%;
+
+    --sidebar: 180 2% 12%;
+
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-serif: "Lora", ui-serif, Georgia, serif;
+    --font-mono: "Space Mono", ui-monospace, monospace;
+
+    --shadow-2xs: 0 1px 2px 0px hsl(180 2% 12% / 0.03);
+    --shadow-xs: 0 1px 3px 0px hsl(180 2% 12% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(180 2% 12% / 0.08), 0 1px 2px -1px hsl(180 2% 12% / 0.08);
+    --shadow: 0 1px 3px 0px hsl(180 2% 12% / 0.1), 0 1px 2px -1px hsl(180 2% 12% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(180 2% 12% / 0.1), 0 2px 4px -2px hsl(180 2% 12% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(180 2% 12% / 0.1), 0 4px 6px -4px hsl(180 2% 12% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(180 2% 12% / 0.1), 0 8px 10px -6px hsl(180 2% 12% / 0.1);
+    --shadow-2xl: 0 25px 50px -12px hsl(180 2% 12% / 0.25);
+
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+
+  .dark {
+    --background: 180 4% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 180 4% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 180 4% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 358 69% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 46 62% 22%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 180 4% 18%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 46 62% 35%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 180 4% 20%;
+    --input: 180 4% 20%;
+    --ring: 358 69% 48%;
+
+    --sidebar-background: 180 4% 12%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 358 69% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 358 69% 38%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 180 4% 20%;
+    --sidebar-ring: 46 62% 55%;
+
+    --chart-1: 358 69% 48%;
+    --chart-2: 46 62% 55%;
+    --chart-3: 0 0% 95%;
+    --chart-4: 142 71% 50%;
+    --chart-5: 38 92% 55%;
+
+    --sidebar: 180 4% 12%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

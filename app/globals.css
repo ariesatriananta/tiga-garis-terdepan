@@ -11,7 +11,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* TGT Brand: #A51E23 (red), #1E1F1F (black), #D3B243 (gold) */
+    /* Tiga Garis Terdepan Brand: #A51E23 (red), #1E1F1F (black), #D3B243 (gold) */
     --background: 0 0% 98%;
     --foreground: 180 2% 12%;
 
@@ -143,5 +143,24 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .login-dot-bg {
+    background-image:
+      radial-gradient(circle, hsl(var(--accent) / 0.55) 1.5px, transparent 1.5px),
+      radial-gradient(circle, hsl(var(--accent) / 0.35) 1.5px, transparent 1.5px);
+    background-size: 24px 24px, 36px 36px;
+    animation: login-dots-drift 22s linear infinite;
+  }
+}
+
+@keyframes login-dots-drift {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: -240px 240px, 240px -240px;
   }
 }

@@ -32,17 +32,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   Plus,
   Search,
-  MoreHorizontal,
-  Eye,
   Printer,
   Download,
   Filter,
@@ -72,6 +63,21 @@ export default function Invoices() {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [headerDataUrl, setHeaderDataUrl] = useState<string>('');
   const [settings, setSettings] = useState<SettingsPayload | null>(null);
+  const bankOptions = [
+    {
+      id: 'mandiri-arteri',
+      bank: 'Bank Mandiri',
+      branch: 'KCP Jakarta Arteri Pondok Indah',
+      account: '1010-0333-303-304',
+    },
+    {
+      id: 'mandiri-depok',
+      bank: 'Bank Mandiri',
+      branch: 'KCP Depok Timur',
+      account: '157-00-3330330-7',
+    },
+  ];
+  const [bankOptionId, setBankOptionId] = useState(bankOptions[0].id);
 
   const searchQuery = searchParams.get('q') ?? '';
   const filterStatus = (searchParams.get('status') ?? 'ALL') as InvoiceStatus | 'ALL';
@@ -249,7 +255,7 @@ export default function Invoices() {
     contracts.find((c) => c.id === contractId);
 
   const formatDateLong = (value: Date | string) =>
-    new Date(value).toLocaleDateString('id-ID', {
+    new Date(value).toLocaleDateString('en-US', {
       timeZone: 'Asia/Jakarta',
       day: '2-digit',
       month: 'long',
@@ -273,6 +279,13 @@ export default function Invoices() {
     const contract = getContractById(invoice.contractId);
     const client = contract?.client;
     const terminName = terminNameById[invoice.terminId] ?? '';
+    const submissionCode = contract?.submissionCode ?? '';
+    const signer =
+      submissionCode === '420'
+        ? { name: 'Ontoseno', title: 'Direktur' }
+        : submissionCode === '723'
+        ? { name: 'Dimas Tirto Wijayandaru, MM', title: 'Direktur Utama' }
+        : { name: '', title: '' };
     const descriptionParts = [contract?.contractTitle, terminName].filter(Boolean);
     const description = descriptionParts.join('\n');
     const dpp = Number(invoice.amount);
@@ -283,17 +296,21 @@ export default function Invoices() {
       contractNumber: contract?.proposalNumber ?? '-',
       invoiceNumber: invoice.invoiceNumber,
       invoiceDate: formatDateLong(invoice.invoiceDate),
+      invoiceDateEnglish: formatDateLong(invoice.invoiceDate),
       clientName: client?.name ?? '-',
       clientAddress: client?.address ?? '-',
       clientPic: client?.picName ?? '-',
       description: description || '-',
+      contractTitle: contract?.contractTitle ?? '-',
+      terminName: terminName || '-',
       dpp,
       ppn,
       ppnRate,
       total,
       terbilang: terbilang(total).toUpperCase(),
-      signerName: settings?.defaultSignerName || 'Anita Rahman, CPA',
-      companyName: settings?.companyName || '',
+      signerName: signer.name || settings?.defaultSignerName || '',
+      signerTitle: signer.title || '',
+      companyName: settings?.companyName || 'PT Tiga Garis Terdepan',
       companyAddress: settings?.companyAddress || '',
       companyPhone: settings?.companyPhone || '',
       companyEmail: settings?.companyEmail || '',
@@ -306,6 +323,9 @@ export default function Invoices() {
   const handlePrintInvoice = () => {
     if (!selectedInvoice) return;
     const data = getInvoicePreviewData(selectedInvoice);
+    const selectedBank =
+      bankOptions.find((option) => option.id === bankOptionId) ?? bankOptions[0];
+    const terminLabel = terminNameById[selectedInvoice.terminId] ?? 'Payment';
     const printWindow = window.open('', '_blank', 'width=1000,height=800');
     if (!printWindow) return;
     const headerUrl = headerDataUrl || `${window.location.origin}/invoice-header.png`;
@@ -319,7 +339,7 @@ export default function Invoices() {
           <title>Invoice ${data.invoiceNumber}</title>
           <style>
               @page { size: A4; margin: 20mm; }
-              :root { --primary: #1e4e8c; --primary-soft: #e7eef8; --border: #94a3b8; --muted: #6b7280; }
+              :root { --primary: #A51E23; --primary-soft: #f7e6e7; --border: #94a3b8; --muted: #6b7280; }
             body { font-family: "Segoe UI", Arial, sans-serif; color: #111; background: #fff; }
             .page { page-break-after: always; }
             .header { position: relative; height: 180px; margin-bottom: 18px; }
@@ -358,7 +378,7 @@ export default function Invoices() {
               .totals td { border: none; padding: 6px 8px; }
               .totals tr + tr td { border-top: 1px solid var(--border); }
               .note { font-size: 12px; }
-              .sign { text-align: right; font-size: 12px; }
+              .sign { text-align: left; font-size: 12px; }
               
               .note-table td { border: none; padding: 10px; vertical-align: bottom; }
               .kw-title { text-align: center; font-size: 16px; font-weight: 700; margin-top: 8px; }
@@ -379,81 +399,61 @@ export default function Invoices() {
                 <div class="title">FAKTUR TAGIHAN</div>
               </div>
             </div>
-            <div class="meta">
-              <div class="left">
+            <div style="font-size:12px;">
+              <div>
+                <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>
                 <div>${data.clientAddress}</div>
-                <div style="padding-top: 0.5rem;">Up : ${data.clientPic}</div>
               </div>
-              <div class="right">
-                <table style="margin-left:auto;font-size:12px;">
+              <div style="margin-top:12px;"><strong>Attn:</strong> ${data.clientPic}</div>
+              <div style="margin-top:12px; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 8px 0;">
+                <table style="width:100%; font-size:12px;">
                   <tr>
-                    <td style="padding:0 10px 4px 0; font-weight:600;">No. Invoice</td>
-                    <td style="padding:0 8px 4px 0;">:</td>
-                    <td style="text-align:left;">${data.invoiceNumber}</td>
+                    <td style="width:70px;">No</td>
+                    <td style="width:10px;">:</td>
+                    <td>${data.contractNumber}</td>
+                    <td style="width:60px;">Reff</td>
+                    <td style="width:10px;">:</td>
+                    <td>${data.contractNumber}</td>
                   </tr>
                   <tr>
-                    <td style="padding-right:10px; font-weight:600;">Reff</td>
-                    <td style="padding-right:8px;">:</td>
-                    <td style="text-align:left;">${data.contractNumber}</td>
+                    <td>Date</td>
+                    <td>:</td>
+                    <td colspan="4">${data.invoiceDateEnglish}</td>
                   </tr>
                 </table>
               </div>
+              <div style="margin-top:12px;">We would like to request the following payment for:</div>
+              <div style="margin-top:6px; font-weight:600; text-decoration: underline;">
+                ${data.contractTitle}
+              </div>
+              <table style="width:100%; margin-top:14px; font-size:12px;">
+                <tr>
+                  <td style="border-bottom:1px solid #111; padding:6px 0;">${terminLabel}</td>
+                  <td style="border-bottom:1px solid #111; padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0; font-weight:600;">Total</td>
+                  <td style="padding:6px 0; text-align:right; font-weight:600;">${formatCurrency(data.dpp)}</td>
+                </tr>
+              </table>
+              <div style="margin-top:10px; font-size:11px;">
+                <div>* The service fee includes the applicable tax (PPH 23).</div>
+                <div>* PT Tiga Garis Terdepan does not charge VAT for its services because the Company is a Taxable Entrepreneur (Non PKP).</div>
+              </div>
+              <div style="margin-top:16px;">Please transfer your payment to account:</div>
+              <table style="width:100%; margin-top:6px; font-size:12px;">
+                <tr><td style="width:80px;">Name</td><td style="width:10px;">:</td><td>${data.companyName}</td></tr>
+                <tr><td>NPWP</td><td>:</td><td>96.243.488.2-014.000</td></tr>
+                <tr><td>Bank</td><td>:</td><td>${selectedBank.bank}</td></tr>
+                <tr><td>Branch</td><td>:</td><td>${selectedBank.branch}</td></tr>
+                <tr><td>A/C</td><td>:</td><td>${selectedBank.account}</td></tr>
+              </table>
+              <div style="margin-top:18px;">Thank you for your kind attention and co-operation</div>
+              <div>Your faithfully,</div>
+              <div style="margin-top:50px;">${data.signerName}</div>
+              <div>${data.signerTitle}</div>
             </div>
-              <div class="box" style="margin-top:14px;">
-              <table class="table">
-              <thead>
-                <tr>
-                  <th style="width: 40px;">No</th>
-                  <th>Keterangan</th>
-                  <th style="width: 180px;" class="right">Nilai (Rp)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>${descriptionHtml}</td>
-                  <td class="right">${formatCurrency(data.dpp)}</td>
-                </tr>
-              </tbody>
-              </table>
-              </div>
-              <div class="box" style="margin-top:8px;">
-              <table class="totals">
-              <tr>
-                <td class="right">TOTAL</td>
-                <td class="right" style="width: 180px;">${formatCurrency(data.dpp)}</td>
-              </tr>
-              <tr>
-                <td class="right">PPN (${data.ppnRate}%)</td>
-                <td class="right">${formatCurrency(data.ppn)}</td>
-              </tr>
-              <tr>
-                <td class="right"><strong>TOTAL TAGIHAN</strong></td>
-                <td class="right"><strong>${formatCurrency(data.total)}</strong></td>
-              </tr>
-              </table>
-              </div>
-              <div class="box" style="margin-top:12px;">
-              <table class="note-table">
-              <tr>
-                <td class="note">
-                  <div><strong>Catatan:</strong></div>
-                  <div>Pembayaran dapat dilakukan dengan cara transfer kepada:</div>
-                  <div>KAP KRISNAWAN, NUGROHO & FAHMY</div>
-                  <div>BANK MANDIRI</div>
-                  <div>KCP JAKARTA LEBAK BULUS</div>
-                  <div>No. Rekening 101-00-1469009-1</div>
-                  <div>Bukti transfer email office.rasunasaid@knfdts.id</div>
-                </td>
-                <td class="sign" style="width: 176px;">
-                  <div>Jakarta, ${data.invoiceDate}</div>
-                  <div class="spacer"></div>
-                  <div>${data.signerName}</div>
-                </td>
-              </tr>
-              </table>
-              </div>
           </div>
           <div class="page">
             <div class="header">
@@ -490,6 +490,7 @@ export default function Invoices() {
                   <div>Jakarta, ${data.invoiceDate}</div>
                   <div class="spacer"></div>
                   <div>${data.signerName}</div>
+                  <div>${data.signerTitle}</div>
                 </td>
               </tr>
               </table>
@@ -641,23 +642,10 @@ export default function Invoices() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleOpenPreview(invoice)}>
-                                <Eye className="w-4 h-4 mr-2" />
-                                View Detail
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleOpenPreview(invoice)}>
-                                <Printer className="w-4 h-4 mr-2" />
-                                Print PDF
-                              </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <Button variant="outline" size="sm" onClick={() => handleOpenPreview(invoice)}>
+                              <Printer className="w-4 h-4 mr-2" />
+                              Print
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );
@@ -701,23 +689,10 @@ export default function Invoices() {
                         </span>
                       </div>
                       <div className="mt-3 flex items-center justify-end">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleOpenPreview(invoice)}>
-                              <Eye className="w-4 h-4 mr-2" />
-                              View Detail
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenPreview(invoice)}>
-                              <Printer className="w-4 h-4 mr-2" />
-                              Print PDF
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button variant="outline" size="sm" onClick={() => handleOpenPreview(invoice)}>
+                          <Printer className="w-4 h-4 mr-2" />
+                          Print
+                        </Button>
                       </div>
                     </div>
                   );
@@ -758,6 +733,9 @@ export default function Invoices() {
                 invoice={selectedInvoice}
                 data={getInvoicePreviewData(selectedInvoice)}
                 headerSrc={headerDataUrl || "/invoice-header.png"}
+                bankOptions={bankOptions}
+                bankOptionId={bankOptionId}
+                onBankChange={setBankOptionId}
               />
             )}
           </div>
@@ -777,16 +755,20 @@ interface InvoicePreviewData {
   contractNumber: string;
   invoiceNumber: string;
   invoiceDate: string;
+  invoiceDateEnglish: string;
   clientName: string;
   clientAddress: string;
   clientPic: string;
   description: string;
+  contractTitle: string;
+  terminName: string;
   dpp: number;
   ppn: number;
   ppnRate: number;
   total: number;
   terbilang: string;
   signerName: string;
+  signerTitle: string;
   companyName: string;
   companyAddress: string;
   companyPhone: string;
@@ -800,11 +782,19 @@ function InvoicePreview({
   invoice,
   data,
   headerSrc,
+  bankOptions,
+  bankOptionId,
+  onBankChange,
 }: {
   invoice: Invoice;
   data: InvoicePreviewData;
   headerSrc: string;
+  bankOptions: Array<{ id: string; bank: string; branch: string; account: string }>;
+  bankOptionId: string;
+  onBankChange: (value: string) => void;
 }) {
+  const selectedBank =
+    bankOptions.find((option) => option.id === bankOptionId) ?? bankOptions[0];
   return (
     <div className="space-y-8 rounded-md bg-white p-6 text-black">
         <div className="space-y-4">
@@ -814,99 +804,110 @@ function InvoicePreview({
               style={{ backgroundImage: `url(${headerSrc})` }}
             />
           </div>
-          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-primary">FAKTUR TAGIHAN</h3>
-          <div className="mt-4 flex flex-col gap-4 text-sm md:flex-row md:justify-between">
-            <div className="space-y-1">
-              <p className="font-semibold">{data.clientName}</p>
-            <p>{data.clientAddress}</p>
-            <p className='py-2'>Up : {data.clientPic}</p>
-          </div>
-          <div className="text-left md:text-right">
-            <div className="inline-block text-left">
-              <div className="flex items-center gap-2">
-                <span className="min-w-[86px] text-right font-semibold">No. Invoice</span>
-                <span className="w-3 text-center">:</span>
-                <span>{data.invoiceNumber}</span>
+          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-[#A51E23]">FAKTUR TAGIHAN</h3>
+          <div className="mt-4 text-sm">
+            <div className="flex flex-col gap-4 md:flex-row md:justify-between">
+              <div className="space-y-1">
+                <p className="font-semibold">To:</p>
+                <p className="font-semibold">{data.clientName}</p>
+                <p>{data.clientAddress}</p>
+                <p className="pt-2 font-semibold">Attn: {data.clientPic}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="min-w-[86px] text-right font-semibold">Reff</span>
-                <span className="w-3 text-center">:</span>
-                <span>{data.contractNumber}</span>
+              <div className="text-left md:text-right">
+                <div className="inline-block text-left">
+                  <div className="flex items-center gap-2">
+                    <span className="min-w-[80px] font-semibold">No</span>
+                    <span className="w-3 text-center">:</span>
+                    <span>{data.contractNumber}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="min-w-[80px] font-semibold">Date</span>
+                    <span className="w-3 text-center">:</span>
+                    <span>{data.invoiceDateEnglish}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="min-w-[80px] font-semibold">Reff</span>
+                    <span className="w-3 text-center">:</span>
+                    <span>{data.contractNumber}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 border-b border-t border-slate-400 py-2">
+              We would like to request the following payment for:
+            </div>
+            <div className="mt-2 font-semibold underline">{data.contractTitle}</div>
+            <div className="mt-4">
+              <div className="flex items-center justify-between border-b border-slate-400 py-2">
+                <span>{data.terminName}</span>
+                <span>{formatCurrency(data.dpp)}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 font-semibold">
+                <span>Total</span>
+                <span>{formatCurrency(data.dpp)}</span>
+              </div>
+            </div>
+            <div className="mt-2 text-xs italic">
+              <div>* The service fee includes the applicable tax (PPH 23).</div>
+              <div>
+                * PT Tiga Garis Terdepan does not charge VAT for its services because the
+                Company is a Taxable Entrepreneur (Non PKP).
+              </div>
+            </div>
+            <div className="mt-4 text-sm">
+              <div>Please transfer your payment to account:</div>
+              <div className="mt-2 max-w-sm">
+                <Select value={bankOptionId} onValueChange={onBankChange}>
+                  <SelectTrigger className="bg-white text-black border-slate-300">
+                    <SelectValue placeholder="Pilih rekening" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-black">
+                    {bankOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.bank} - {option.branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="mt-3 space-y-1">
+                <div className="flex gap-2">
+                  <span className="w-16">Name</span>
+                  <span>:</span>
+                  <span>{data.companyName}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="w-16">NPWP</span>
+                  <span>:</span>
+                  <span>96.243.488.2-014.000</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="w-16">Bank</span>
+                  <span>:</span>
+                  <span>{selectedBank.bank}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="w-16">Branch</span>
+                  <span>:</span>
+                  <span>{selectedBank.branch}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="w-16">A/C</span>
+                  <span>:</span>
+                  <span>{selectedBank.account}</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 text-sm">
+              <p>Thank you for your kind attention and co-operation</p>
+              <p>Your faithfully,</p>
+              <div className="mt-10">
+                <p>{data.signerName}</p>
+                <p>{data.signerTitle}</p>
               </div>
             </div>
           </div>
         </div>
-        <div className="overflow-auto rounded-md border border-slate-300">
-          <table className="w-full text-sm">
-            <thead className="bg-primary/10 text-left text-primary uppercase tracking-wide">
-              <tr>
-                <th className="border-b border-slate-300 p-2 w-10">No</th>
-                  <th className="border-b border-slate-300 p-2">Keterangan</th>
-                  <th className="border-b border-slate-300 p-2 text-right w-40">Nilai (Rp)</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr:nth-child(even)]:bg-slate-50">
-              <tr>
-                  <td className="border-b border-slate-200 p-2">1</td>
-                  <td className="border-b border-slate-200 p-2 whitespace-pre-line">
-                    {data.description}
-                  </td>
-                  <td className="border-b border-slate-200 p-2 text-right">
-                    {formatCurrency(data.dpp)}
-                  </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="overflow-auto rounded-md border border-slate-300">
-          <table className="w-full text-sm">
-            <tbody>
-              <tr>
-                  <td className="border-b border-slate-300 p-2 text-right w-[70%]">TOTAL</td>
-                  <td className="border-b border-slate-300 p-2 text-right">
-                    {formatCurrency(data.dpp)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b border-slate-300 p-2 text-right">PPN ({data.ppnRate}%)</td>
-                  <td className="border-b border-slate-300 p-2 text-right">
-                    {formatCurrency(data.ppn)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b border-slate-300 p-2 text-right font-semibold">
-                    TOTAL TAGIHAN
-                  </td>
-                  <td className="border-b border-slate-300 p-2 text-right font-semibold">
-                    {formatCurrency(data.total)}
-                  </td>
-                </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="overflow-auto rounded-md border border-slate-300 text-sm">
-          <table className="w-full">
-            <tbody>
-              <tr>
-                  <td className="border-b border-slate-300 p-3 align-top w-[60%]">
-                    <p className="font-semibold">Catatan:</p>
-                  <p>Pembayaran dapat dilakukan dengan cara transfer kepada:</p>
-                  <p>KAP KRISNAWAN, NUGROHO & FAHMY</p>
-                  <p>BANK MANDIRI</p>
-                  <p>KCP JAKARTA LEBAK BULUS</p>
-                  <p>No. Rekening 101-00-1469009-1</p>
-                  <p>Bukti transfer email ke office.rasunasaid@knfdts.id</p>
-                </td>
-                  <td className="border-b border-slate-300 p-3 align-top text-right w-[40%]">
-                    <p>Jakarta, {data.invoiceDate}</p>
-                  <div className="h-32" />
-                  <p>{data.signerName}</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
 
       <div className="space-y-4">
         <div className="relative h-44">
@@ -915,7 +916,7 @@ function InvoicePreview({
             style={{ backgroundImage: `url(${headerSrc})` }}
           />
         </div>
-          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-primary">KWITANSI</h3>
+          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-[#A51E23]">KWITANSI</h3>
         <div className="mt-4 overflow-auto rounded-md border border-slate-300">
           <table className="w-full text-sm">
             <tbody>

@@ -81,7 +81,7 @@ export const mockClients: Client[] = [
 export const mockContracts: Contract[] = [
   {
     id: '1',
-    proposalDate: new Date('2024-12-01'),
+    proposalDate: new Date('2026-01-01'),
     clientId: '1',
     client: mockClients[0],
     serviceCode: 'A',
@@ -94,12 +94,12 @@ export const mockContracts: Contract[] = [
     paymentStatus: 'PARTIAL',
     status: 'ACTIVE',
     notes: 'Audit tahunan untuk laporan keuangan',
-    createdAt: new Date('2024-12-01'),
-    updatedAt: new Date('2024-12-01')
+    createdAt: new Date('2026-01-01'),
+    updatedAt: new Date('2026-01-01')
   },
   {
     id: '2',
-    proposalDate: new Date('2024-12-05'),
+    proposalDate: new Date('2026-01-02'),
     clientId: '2',
     client: mockClients[1],
     serviceCode: 'B',
@@ -111,12 +111,12 @@ export const mockContracts: Contract[] = [
     contractValue: 85000000,
     paymentStatus: 'UNPAID',
     status: 'ACTIVE',
-    createdAt: new Date('2024-12-05'),
-    updatedAt: new Date('2024-12-05')
+    createdAt: new Date('2026-01-02'),
+    updatedAt: new Date('2026-01-02')
   },
   {
     id: '3',
-    proposalDate: new Date('2024-12-10'),
+    proposalDate: new Date('2026-01-03'),
     clientId: '1',
     client: mockClients[0],
     serviceCode: 'A',
@@ -128,12 +128,12 @@ export const mockContracts: Contract[] = [
     contractValue: 75000000,
     paymentStatus: 'PAID',
     status: 'ACTIVE',
-    createdAt: new Date('2024-12-10'),
-    updatedAt: new Date('2024-12-10')
+    createdAt: new Date('2026-01-03'),
+    updatedAt: new Date('2026-01-03')
   },
   {
     id: '4',
-    proposalDate: new Date('2024-11-15'),
+    proposalDate: new Date('2026-01-07'),
     clientId: '3',
     client: mockClients[2],
     serviceCode: 'B',
@@ -145,12 +145,12 @@ export const mockContracts: Contract[] = [
     contractValue: 200000000,
     paymentStatus: 'PARTIAL',
     status: 'ACTIVE',
-    createdAt: new Date('2024-11-15'),
-    updatedAt: new Date('2024-11-15')
+    createdAt: new Date('2026-01-07'),
+    updatedAt: new Date('2026-01-07')
   },
   {
     id: '5',
-    proposalDate: new Date('2024-10-20'),
+    proposalDate: new Date('2026-01-10'),
     clientId: '5',
     client: mockClients[4],
     serviceCode: 'A',
@@ -162,8 +162,8 @@ export const mockContracts: Contract[] = [
     contractValue: 120000000,
     paymentStatus: 'PAID',
     status: 'ACTIVE',
-    createdAt: new Date('2024-10-20'),
-    updatedAt: new Date('2024-10-20')
+    createdAt: new Date('2026-01-10'),
+    updatedAt: new Date('2026-01-10')
   }
 ];
 
@@ -174,32 +174,32 @@ export const mockTermins: Termin[] = [
     contractId: '1',
     terminName: 'DP 30%',
     terminAmount: 45000000,
-    dueDate: new Date('2024-12-15'),
+    dueDate: new Date('2026-01-04'),
     status: 'PAID',
-    paymentReceivedDate: new Date('2024-12-14'),
-    createdAt: new Date('2024-12-01'),
-    updatedAt: new Date('2024-12-14')
+    paymentReceivedDate: new Date('2026-01-04'),
+    createdAt: new Date('2026-01-01'),
+    updatedAt: new Date('2026-01-04')
   },
   {
     id: '2',
     contractId: '1',
     terminName: 'Termin 2 (40%)',
     terminAmount: 60000000,
-    dueDate: new Date('2025-01-15'),
+    dueDate: new Date('2026-01-06'),
     status: 'INVOICED',
     invoiceId: '1',
-    createdAt: new Date('2024-12-01'),
-    updatedAt: new Date('2024-12-20')
+    createdAt: new Date('2026-01-02'),
+    updatedAt: new Date('2026-01-06')
   },
   {
     id: '3',
     contractId: '1',
     terminName: 'Pelunasan (30%)',
     terminAmount: 45000000,
-    dueDate: new Date('2025-02-15'),
+    dueDate: new Date('2026-01-10'),
     status: 'PENDING',
-    createdAt: new Date('2024-12-01'),
-    updatedAt: new Date('2024-12-01')
+    createdAt: new Date('2026-01-03'),
+    updatedAt: new Date('2026-01-03')
   },
   {
     id: '4',
@@ -207,30 +207,30 @@ export const mockTermins: Termin[] = [
     terminName: 'Full Payment',
     terminAmount: 75000000,
     status: 'PAID',
-    paymentReceivedDate: new Date('2024-12-20'),
-    createdAt: new Date('2024-12-10'),
-    updatedAt: new Date('2024-12-20')
+    paymentReceivedDate: new Date('2026-01-05'),
+    createdAt: new Date('2026-01-03'),
+    updatedAt: new Date('2026-01-05')
   },
   {
     id: '5',
     contractId: '4',
     terminName: 'DP 50%',
     terminAmount: 100000000,
-    dueDate: new Date('2024-11-30'),
+    dueDate: new Date('2026-01-08'),
     status: 'PAID',
-    paymentReceivedDate: new Date('2024-11-28'),
-    createdAt: new Date('2024-11-15'),
-    updatedAt: new Date('2024-11-28')
+    paymentReceivedDate: new Date('2026-01-08'),
+    createdAt: new Date('2026-01-07'),
+    updatedAt: new Date('2026-01-08')
   },
   {
     id: '6',
     contractId: '4',
     terminName: 'Pelunasan 50%',
     terminAmount: 100000000,
-    dueDate: new Date('2025-01-30'),
+    dueDate: new Date('2026-01-10'),
     status: 'PENDING',
-    createdAt: new Date('2024-11-15'),
-    updatedAt: new Date('2024-11-15')
+    createdAt: new Date('2026-01-07'),
+    updatedAt: new Date('2026-01-07')
   }
 ];
 
@@ -238,27 +238,27 @@ export const mockTermins: Termin[] = [
 export const mockInvoices: Invoice[] = [
   {
     id: '1',
-    invoiceDate: new Date('2024-12-20'),
+    invoiceDate: new Date('2026-01-06'),
     contractId: '1',
     terminId: '2',
     seqNo: 2,
     invoiceNumber: 'I.002/TGT-A.420/XII/2024',
     amount: 60000000,
     status: 'ISSUED',
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20')
+    createdAt: new Date('2026-01-06'),
+    updatedAt: new Date('2026-01-06')
   },
   {
     id: '2',
-    invoiceDate: new Date('2024-12-14'),
+    invoiceDate: new Date('2026-01-04'),
     contractId: '1',
     terminId: '1',
     seqNo: 1,
     invoiceNumber: 'I.001/TGT-A.420/XII/2024',
     amount: 45000000,
     status: 'PAID',
-    createdAt: new Date('2024-12-14'),
-    updatedAt: new Date('2024-12-14')
+    createdAt: new Date('2026-01-04'),
+    updatedAt: new Date('2026-01-04')
   }
 ];
 
@@ -266,7 +266,7 @@ export const mockInvoices: Invoice[] = [
 export const mockLetters: Letter[] = [
   {
     id: '1',
-    letterDate: new Date('2024-12-15'),
+    letterDate: new Date('2026-01-04'),
     clientId: '1',
     client: mockClients[0],
     letterType: 'HRGA',
@@ -275,12 +275,12 @@ export const mockLetters: Letter[] = [
     seqNo: 1,
     letterNumber: '001/TGT-A.420/Employee-A/XII/2024',
     status: 'ACTIVE',
-    createdAt: new Date('2024-12-15'),
-    updatedAt: new Date('2024-12-15')
+    createdAt: new Date('2026-01-04'),
+    updatedAt: new Date('2026-01-04')
   },
   {
     id: '2',
-    letterDate: new Date('2024-12-18'),
+    letterDate: new Date('2026-01-08'),
     clientId: '2',
     client: mockClients[1],
     letterType: 'UMUM',
@@ -288,12 +288,12 @@ export const mockLetters: Letter[] = [
     seqNo: 2,
     letterNumber: 'L.002/TGT-A.420/XII/2024',
     status: 'ACTIVE',
-    createdAt: new Date('2024-12-18'),
-    updatedAt: new Date('2024-12-18')
+    createdAt: new Date('2026-01-08'),
+    updatedAt: new Date('2026-01-08')
   },
   {
     id: '3',
-    letterDate: new Date('2024-12-20'),
+    letterDate: new Date('2026-01-09'),
     clientId: '3',
     client: mockClients[2],
     letterType: 'SURAT_TUGAS',
@@ -301,8 +301,8 @@ export const mockLetters: Letter[] = [
     seqNo: 3,
     letterNumber: 'L.003/TGT-A.420/XII/2024',
     status: 'ACTIVE',
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20')
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09')
   }
 ];
 
@@ -312,8 +312,8 @@ export const mockLetterAssignments: LetterAssignment[] = [
     letterId: '3',
     title: 'Penugasan Jasa Audit Laporan Keuangan',
     auditPeriodText: 'Untuk Tahun yang Berakhir 31 Desember 2024',
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
 ];
 
@@ -324,8 +324,8 @@ export const mockLetterAssignmentMembers: LetterAssignmentMember[] = [
     name: 'Nama',
     role: 'Rekan Penanggung Jawab',
     order: 1,
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
   {
     id: '2',
@@ -333,8 +333,8 @@ export const mockLetterAssignmentMembers: LetterAssignmentMember[] = [
     name: 'Nama',
     role: 'Manajer',
     order: 2,
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
   {
     id: '3',
@@ -342,8 +342,8 @@ export const mockLetterAssignmentMembers: LetterAssignmentMember[] = [
     name: 'Nama',
     role: 'Ketua Tim',
     order: 3,
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
   {
     id: '4',
@@ -351,8 +351,8 @@ export const mockLetterAssignmentMembers: LetterAssignmentMember[] = [
     name: 'Nama',
     role: 'Anggota Tim',
     order: 4,
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
   {
     id: '5',
@@ -360,8 +360,8 @@ export const mockLetterAssignmentMembers: LetterAssignmentMember[] = [
     name: 'Nama',
     role: 'Anggota Tim',
     order: 5,
-    createdAt: new Date('2024-12-20'),
-    updatedAt: new Date('2024-12-20'),
+    createdAt: new Date('2026-01-09'),
+    updatedAt: new Date('2026-01-09'),
   },
 ];
 

@@ -24,10 +24,12 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
   }, [isAuthenticated, isLoading, router]);
 
   useEffect(() => {
-    if (title) {
-      document.title = `TGT - ${title}`;
+    if (title === 'Dashboard') {
+      document.title = 'TGT Admin System';
+    } else if (title) {
+      document.title = `Tiga Garis Terdepan - ${title}`;
     } else {
-      document.title = 'TGT - Admin System';
+      document.title = 'Tiga Garis Terdepan - Admin System';
     }
   }, [title]);
 

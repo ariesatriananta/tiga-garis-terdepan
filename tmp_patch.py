@@ -1,0 +1,8 @@
+from pathlib import Path
+path = Path("src/components/layout/AdminSidebar.tsx")
+text = path.read_text()
+start = text.index("      <div className=\"px-4 pb-5 text-[11px] text-sidebar-foreground/70\">")
+end = text.index("      </div>\r\n    </aside>", start)
+new_block = """      <div className=\"px-4 pb-5 text-[11px] text-sidebar-foreground/70\">\n        {!isCollapsed ? (\n          <div className=\"rounded-2xl border border-sidebar-border/60 bg-gradient-to-br from-[#1D1F1F] via-[#1D1F1F]/70 to-[#2F1E11] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.35)]\">\n            <div className=\"text-[10px] uppercase tracking-[0.3em] text-sidebar-foreground/60\">\n              Tiga Garis Terdepan\n            </div>\n            <div className=\"mt-1 text-sm font-semibold text-white/90\">\n              Finance · Tax · Advisory\n            </div>\n            <div className=\"mt-3 flex items-center justify-between text-[10px] text-white/70\">\n              <span>© {new Date().getFullYear()}</span>\n              <span className=\"flex items-center gap-1 rounded-full border border-white/30 px-2 py-0.5 text-[10px] text-white/80\">\n                <span className=\"h-2 w-2 rounded-full bg-[#D3B243]\" />\n                Premium\n              </span>\n            </div>\n          </div>\n        ) : (\n          <div className=\"mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent/50 text-[10px] font-semibold text-white/90 shadow-xl\">\n            TGT\n          </div>\n        )}\n      </div>\n"""
+text = text[:start] + new_block + text[end:]
+path.write_text(text)

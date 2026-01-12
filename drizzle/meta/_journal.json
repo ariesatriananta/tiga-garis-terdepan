@@ -57,6 +57,13 @@
       "when": 1767367200000,
       "tag": "0007_add_client_npwp",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1767453600000,
+      "tag": "0008_add_contract_submission_code",
+      "breakpoints": true
     }
   ]
 }

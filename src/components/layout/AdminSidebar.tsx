@@ -66,6 +66,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
   const { isPlaying, progress, toggle, seek } = useGlobalAudio();
 
   const isCollapsed = allowCollapse ? collapsed : false;
+  const logoSrc = isCollapsed ? '/logo.png' : '/logo-2.png';
 
   return (
     <aside
@@ -78,32 +79,26 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
       {/* Logo Section */}
       <div
         className={cn(
-          'p-4 border-b border-sidebar-border flex gap-3',
+          'p-4 border-b border-sidebar-border flex gap-3 relative',
           isCollapsed ? 'flex-col items-center' : 'items-center justify-between'
         )}
       >
-        <div className={cn('flex items-center gap-3 min-w-0', isCollapsed && 'justify-center')}>
+        <div className={cn('flex items-center min-w-0', isCollapsed ? 'justify-center' : 'w-full justify-center')}>
           <img
-            src="/logo-2.jpg"
-            alt="TGT Logo"
+            src={logoSrc}
+            alt="Tiga Garis Terdepan Logo"
             className={cn(
               'rounded-md transition-all',
-              isCollapsed ? 'w-8 h-8' : 'w-16 h-10'
+              isCollapsed ? 'w-8 h-8' : 'w-48 h-auto'
             )}
           />
-          {!isCollapsed && (
-            <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-sm">TGT</span>
-              <span className="text-xs opacity-80">Admin System</span>
-            </div>
-          )}
         </div>
         {allowCollapse && (
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={cn(
-              'p-2 rounded-md hover:bg-sidebar-accent transition-colors',
-              isCollapsed && 'mt-1'
+              'p-2 rounded-md hover:bg-sidebar-accent transition-colors absolute -right-3 top-16 z-20 bg-sidebar border border-sidebar-border shadow-md',
+              isCollapsed && 'mt-0'
             )}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -131,7 +126,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
                 <Link
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors',
+                    'group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors',
                     'hover:bg-sidebar-accent',
                     isActive && 'bg-sidebar-accent font-medium'
                   )}
@@ -143,6 +138,13 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
                   }}
                   title={isCollapsed ? item.title : undefined}
                 >
+                  <span
+                    className={cn(
+                      'absolute left-0 top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-r-full bg-accent opacity-0 transition-opacity',
+                      'group-hover:opacity-100',
+                      isActive && 'opacity-100'
+                    )}
+                  />
                   <item.icon className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && <span className="flex-1">{item.title}</span>}
                   {!isCollapsed && isLoading && (
@@ -191,20 +193,26 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
           </div>
         )}
       </div>
-      <div className="px-4 pb-4 text-[11px] text-sidebar-foreground/70">
+      <div className="px-4 pb-5 text-[11px] text-sidebar-foreground/70">
         {!isCollapsed ? (
-          <div className="rounded-md border border-sidebar-border/60 bg-sidebar-accent/20 px-3 py-2">
-            <div className="flex items-center justify-between font-medium text-sidebar-foreground/80">
-              <span>TGT</span>
-              <span>© {new Date().getFullYear()}</span>
+          <div className="rounded-2xl border border-sidebar-border/60 bg-gradient-to-br from-[#1D1F1F] via-[#1D1F1F]/70 to-[#2F1E11] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-sidebar-foreground/60">
+              Tiga Garis Terdepan
             </div>
-            <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-sidebar-foreground/60">
-              All rights reserved
+            <div className="mt-1 text-sm font-semibold text-white/90">
+              Finance - Tax - Advisory
+            </div>
+            <div className="mt-3 flex items-center justify-between text-[10px] text-white/70">
+              <span>(c) {new Date().getFullYear()}</span>
+              <span className="flex items-center gap-1 rounded-full border border-white/30 px-2 py-0.5 text-[10px] text-white/80">
+                <span className="h-2 w-2 rounded-full bg-[#D3B243]" />
+                V1.0
+              </span>
             </div>
           </div>
         ) : (
-          <div className="rounded-md border border-sidebar-border/60 bg-sidebar-accent/20 px-2 py-2 text-center">
-            ©
+          <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent/50 text-[10px] font-semibold text-white/90 shadow-xl">
+            TGT
           </div>
         )}
       </div>

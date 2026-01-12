@@ -63,22 +63,23 @@ async function resolveClientId(db: ReturnType<typeof getDb>, clientId: string) {
 async function seedUsers() {
   const db = getDb();
   const now = new Date();
-  const passwordHash = await bcrypt.hash("iecnet123", 10);
+  const passwordHash = await bcrypt.hash("tgt123", 10);
   await db
     .insert(users)
     .values({
       id: "1",
-      username: "iecnet",
-      name: "Admin TGT",
+      username: "tgt",
+      name: "Admin Tiga Garis Terdepan",
       role: "ADMIN",
       passwordHash,
       createdAt: now,
       updatedAt: now,
     })
     .onConflictDoUpdate({
-      target: users.username,
+      target: users.id,
       set: {
-        name: "Admin TGT",
+        username: "tgt",
+        name: "Admin Tiga Garis Terdepan",
         role: "ADMIN",
         passwordHash,
         updatedAt: now,

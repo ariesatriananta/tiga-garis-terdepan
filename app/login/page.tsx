@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -19,12 +20,13 @@ export default function Login() {
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { resolvedTheme } = useTheme();
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    document.title = 'TGT - Login';
+    document.title = 'Tiga Garis Terdepan - Login';
     if (isAuthenticated) {
       router.push('/dashboard');
     }
@@ -120,7 +122,7 @@ export default function Login() {
       if (success) {
         toast({
           title: 'Login berhasil',
-          description: 'Selamat datang di TGT Admin System',
+          description: 'Selamat datang di Tiga Garis Terdepan Admin System',
         });
         router.push('/dashboard');
       } else {
@@ -143,25 +145,22 @@ export default function Login() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/40 p-4">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-80"
-        style={{
-          backgroundImage:
-            "radial-gradient(900px circle at 15% 0%, hsl(var(--primary) / 0.12), transparent 55%)," +
-            "radial-gradient(700px circle at 85% 10%, hsl(var(--chart-2) / 0.1), transparent 50%)," +
-            "repeating-linear-gradient(135deg, hsl(var(--foreground) / 0.05) 0, hsl(var(--foreground) / 0.05) 1px, transparent 1px, transparent 6px)",
-        }}
-      />
+      <div className="pointer-events-none absolute inset-0 opacity-80 login-dot-bg" />
       <div className="relative z-10 w-full max-w-md">
         <div className="pointer-events-none absolute -inset-10 rounded-[32px] bg-[radial-gradient(120px_120px_at_20%_15%,rgba(56,189,248,0.35),transparent_60%),radial-gradient(160px_160px_at_80%_20%,rgba(34,197,94,0.25),transparent_65%),radial-gradient(220px_220px_at_50%_85%,rgba(59,130,246,0.2),transparent_70%)] opacity-70 blur-2xl" />
         {/* Logo and Title */}
         <div className="text-center mb-2">
           <img
             src="/logo-1.png"
-            alt="TGT Logo"
-            className="mx-auto mb-4 h-auto w-auto max-w-full rounded-lg"
+            alt="Tiga Garis Terdepan Logo"
+            className="mx-auto mb-4 h-auto w-80 max-w-full rounded-lg dark:hidden"
           />
-          <h1 className="text-2xl font-bold text-foreground">TGT Admin System</h1>
+          <img
+            src="/logo-2.png"
+            alt="Tiga Garis Terdepan Logo"
+            className="mx-auto mb-4 h-auto w-80 max-w-full rounded-lg hidden dark:block"
+          />
+          <h1 className="text-2xl font-bold text-foreground">Tiga Garis Terdepan Admin System</h1>
           <div className="mx-auto mt-2 flex max-w-[220px] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-1 py-1 text-xs text-muted-foreground backdrop-blur">
             <button
               type="button"

@@ -1,4 +1,4 @@
-# TGT Admin System (Next.js)
+# Tiga Garis Terdepan Admin System (Next.js)
 
 ## Run Lokal
 

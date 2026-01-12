@@ -2,7 +2,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "TGT - Admin System",
+  title: "Tiga Garis Terdepan - Admin System",
   description: "Tiga Garis Terdepan Admin System",
   icons: {
     icon: "/logo.png",

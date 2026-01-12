@@ -282,16 +282,16 @@ export default function Invoices() {
     const submissionCode = contract?.submissionCode ?? '';
     const signer =
       submissionCode === '420'
-        ? { name: 'Ontoseno', title: 'Direktur' }
+        ? { name: 'Ontoseno', title: 'Director' }
         : submissionCode === '723'
-        ? { name: 'Dimas Tirto Wijayandaru, MM', title: 'Direktur Utama' }
+        ? { name: 'Dimas Tirto Wijayandaru, MM', title: 'President Director' }
         : { name: '', title: '' };
     const descriptionParts = [contract?.contractTitle, terminName].filter(Boolean);
     const description = descriptionParts.join('\n');
     const dpp = Number(invoice.amount);
     const ppnRate = Number(settings?.defaultPpnRate ?? 11);
-    const ppn = Math.round(dpp * (ppnRate / 100));
-    const total = dpp + ppn;
+    const ppn = 0;
+    const total = dpp;
     return {
       contractNumber: contract?.proposalNumber ?? '-',
       invoiceNumber: invoice.invoiceNumber,
@@ -329,7 +329,7 @@ export default function Invoices() {
     const printWindow = window.open('', '_blank', 'width=1000,height=800');
     if (!printWindow) return;
     const headerUrl = headerDataUrl || `${window.location.origin}/invoice-header.png`;
-    const logoUrl = data.companyLogoUrl || `${window.location.origin}/logo-1.png`;
+    const footerUrl = `${window.location.origin}/footer.png`;
     const descriptionHtml = data.description.replace(/\n/g, '<br/>');
     const html = `
       <!doctype html>
@@ -341,16 +341,17 @@ export default function Invoices() {
               @page { size: A4; margin: 20mm; }
               :root { --primary: #A51E23; --primary-soft: #f7e6e7; --border: #94a3b8; --muted: #6b7280; }
             body { font-family: "Segoe UI", Arial, sans-serif; color: #111; background: #fff; }
-            .page { page-break-after: always; }
+            .page { page-break-after: always; position: relative; }
             .header { position: relative; height: 180px; margin-bottom: 18px; }
             .header-bg { position: absolute; inset: 0; background-image: url('${headerUrl}'); background-size: cover; background-position: top center; }
-            .header-content { position: relative; text-align: center; padding-top: 175px; }
+            .header-content { position: relative; padding-top: 175px; }
             .page:last-child { page-break-after: auto; }
             @media print {
               body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             }
-            .title { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--primary); }
-            .meta { display: flex; justify-content: space-between; margin-top: 46px; font-size: 12px; }
+            .title { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--primary); text-align: center; }
+            .footer-image { margin-top: 32px; width: 100%; height: auto; }
+            .meta { display: flex; justify-content: space-between; margin-top: 46px; font-size: 14px; }
             .meta .left { max-width: 60%; }
               .box {
                 border: 0.5px solid var(--border);
@@ -365,7 +366,7 @@ export default function Invoices() {
                 width: 100%;
                 border-collapse: collapse; /* penting untuk rapihin garis */
                 margin-top: 0;
-                font-size: 12px;
+                font-size: 14px;
                 border: none; /* ✅ HILANGKAN border luar table */
                 }
                 
@@ -378,7 +379,7 @@ export default function Invoices() {
               .totals td { border: none; padding: 6px 8px; }
               .totals tr + tr td { border-top: 1px solid var(--border); }
               .note { font-size: 12px; }
-              .sign { text-align: left; font-size: 12px; }
+              .sign { text-align: left; font-size: 14px; }
               
               .note-table td { border: none; padding: 10px; vertical-align: bottom; }
               .kw-title { text-align: center; font-size: 16px; font-weight: 700; margin-top: 8px; }
@@ -386,20 +387,32 @@ export default function Invoices() {
               .kw-table td { border: none; padding: 8px; vertical-align: top; }
               .kw-table tr + tr td { border-top: 1px solid var(--border); }
               .kw-label { width: 180px; }
-              .kw-box { border: 0.5px solid var(--border); padding: 6px 10px; display: inline-block; }
+            .kw-box { border: 0.5px solid var(--border); padding: 6px 10px; display: inline-block; }
             .kw-amount { font-size: 14px; font-weight: 700; }
-            .spacer { height: 120px; }
+            .spacer { height: 70px; }
+            .watermark {
+              position: absolute;
+              inset: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 140px;
+              font-weight: 700;
+              letter-spacing: 8px;
+              color: rgba(0, 0, 0, 0.18);
+              pointer-events: none;
+            }
           </style>
         </head>
         <body>
           <div class="page">
+            <div class="watermark">INVOICE</div>
             <div class="header">
               <div class="header-bg"></div>
               <div class="header-content">
-                <div class="title">FAKTUR TAGIHAN</div>
               </div>
             </div>
-            <div style="font-size:12px;">
+            <div style="font-size:14px;">
               <div>
                 <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>
@@ -407,14 +420,14 @@ export default function Invoices() {
               </div>
               <div style="margin-top:12px;"><strong>Attn:</strong> ${data.clientPic}</div>
               <div style="margin-top:12px; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 8px 0;">
-                <table style="width:100%; font-size:12px;">
+                <table style="width:100%; font-size:14px;">
                   <tr>
                     <td style="width:70px;">No</td>
                     <td style="width:10px;">:</td>
                     <td>${data.contractNumber}</td>
-                    <td style="width:60px;">Reff</td>
-                    <td style="width:10px;">:</td>
-                    <td>${data.contractNumber}</td>
+                      <td style="text-align:right;">Reff</td>
+                      <td style="width:6px; text-align:right;">:</td>
+                      <td style="width:165px; text-align:right;">${data.contractNumber}</td>
                   </tr>
                   <tr>
                     <td>Date</td>
@@ -427,7 +440,7 @@ export default function Invoices() {
               <div style="margin-top:6px; font-weight:600; text-decoration: underline;">
                 ${data.contractTitle}
               </div>
-              <table style="width:100%; margin-top:14px; font-size:12px;">
+              <table style="width:100%; margin-top:14px; font-size:14px;">
                 <tr>
                   <td style="border-bottom:1px solid #111; padding:6px 0;">${terminLabel}</td>
                   <td style="border-bottom:1px solid #111; padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
@@ -437,31 +450,32 @@ export default function Invoices() {
                   <td style="padding:6px 0; text-align:right; font-weight:600;">${formatCurrency(data.dpp)}</td>
                 </tr>
               </table>
-              <div style="margin-top:10px; font-size:11px;">
+              <div style="margin-top:10px; font-size:12px;">
                 <div>* The service fee includes the applicable tax (PPH 23).</div>
                 <div>* PT Tiga Garis Terdepan does not charge VAT for its services because the Company is a Taxable Entrepreneur (Non PKP).</div>
               </div>
               <div style="margin-top:16px;">Please transfer your payment to account:</div>
-              <table style="width:100%; margin-top:6px; font-size:12px;">
+              <table style="width:100%; margin-top:6px; font-size:14px;">
                 <tr><td style="width:80px;">Name</td><td style="width:10px;">:</td><td>${data.companyName}</td></tr>
-                <tr><td>NPWP</td><td>:</td><td>96.243.488.2-014.000</td></tr>
+                <tr><td>NPWP</td><td>:</td><td>0962.4348.8201.4000</td></tr>
                 <tr><td>Bank</td><td>:</td><td>${selectedBank.bank}</td></tr>
                 <tr><td>Branch</td><td>:</td><td>${selectedBank.branch}</td></tr>
                 <tr><td>A/C</td><td>:</td><td>${selectedBank.account}</td></tr>
               </table>
               <div style="margin-top:18px;">Thank you for your kind attention and co-operation</div>
               <div>Your faithfully,</div>
-              <div style="margin-top:50px;">${data.signerName}</div>
+              <div style="margin-top:70px;">${data.signerName}</div>
               <div>${data.signerTitle}</div>
             </div>
+            <img class="footer-image" src="${footerUrl}" alt="Footer" />
           </div>
           <div class="page">
-            <div class="header">
-              <div class="header-bg"></div>
-              <div class="header-content">
-                <div class="title">KWITANSI</div>
+              <div class="header">
+                <div class="header-bg"></div>
+                <div class="header-content">
+                    <div class="title">KUITANSI</div>
+                </div>
               </div>
-            </div>
               <div class="box" style="margin-top:44px;">
               <table class="kw-table">
               <tr>
@@ -482,7 +496,7 @@ export default function Invoices() {
               </tr>
               <tr>
                 <td class="kw-label">JUMLAH:</td>
-                <td class="kw-amount">${formatCurrency(data.total)}</td>
+                <td class="kw-amount">${formatCurrency(data.dpp)}</td>
               </tr>
               <tr>
                 <td></td>
@@ -793,18 +807,21 @@ function InvoicePreview({
   bankOptionId: string;
   onBankChange: (value: string) => void;
 }) {
+  const footerSrc = "/footer.png";
   const selectedBank =
     bankOptions.find((option) => option.id === bankOptionId) ?? bankOptions[0];
   return (
     <div className="space-y-8 rounded-md bg-white p-6 text-black">
-        <div className="space-y-4">
-          <div className="relative h-44">
-            <div
-              className="absolute inset-0 bg-cover bg-top"
-              style={{ backgroundImage: `url(${headerSrc})` }}
-            />
-          </div>
-          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-[#A51E23]">FAKTUR TAGIHAN</h3>
+        <div className="relative space-y-4">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <span className="text-8xl font-bold tracking-[0.4em] text-black/20">INVOICE</span>
+            </div>
+            <div className="relative h-44">
+                <div
+                className="absolute inset-0 bg-cover bg-top"
+                style={{ backgroundImage: `url(${headerSrc})` }}
+                />
+            </div>
           <div className="mt-4 text-sm">
             <div className="flex flex-col gap-4 md:flex-row md:justify-between">
               <div className="space-y-1">
@@ -825,20 +842,20 @@ function InvoicePreview({
                     <span className="w-3 text-center">:</span>
                     <span>{data.invoiceDateEnglish}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="min-w-[80px] font-semibold">Reff</span>
-                    <span className="w-3 text-center">:</span>
+                    <div className="flex items-center gap-1 justify-end text-right">
+                      <span className="min-w-[36px] font-semibold">Reff</span>
+                    <span className="w-2 text-center">:</span>
                     <span>{data.contractNumber}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="mt-3 border-b border-t border-slate-400 py-2">
+            <div className="mt-3 border-b border-t border-[#A51E23] py-2">
               We would like to request the following payment for:
             </div>
             <div className="mt-2 font-semibold underline">{data.contractTitle}</div>
             <div className="mt-4">
-              <div className="flex items-center justify-between border-b border-slate-400 py-2">
+              <div className="flex items-center justify-between border-b border-[#A51E23] py-2">
                 <span>{data.terminName}</span>
                 <span>{formatCurrency(data.dpp)}</span>
               </div>
@@ -879,7 +896,7 @@ function InvoicePreview({
                 <div className="flex gap-2">
                   <span className="w-16">NPWP</span>
                   <span>:</span>
-                  <span>96.243.488.2-014.000</span>
+                  <span>0962.4348.8201.4000</span>
                 </div>
                 <div className="flex gap-2">
                   <span className="w-16">Bank</span>
@@ -907,16 +924,20 @@ function InvoicePreview({
               </div>
             </div>
           </div>
+          <img src={footerSrc} alt="Footer" className="mt-8 w-full" />
         </div>
 
       <div className="space-y-4">
-        <div className="relative h-44">
-          <div
-            className="absolute inset-0 bg-cover bg-top"
-            style={{ backgroundImage: `url(${headerSrc})` }}
-          />
-        </div>
-          <h3 className="mt-4 text-center text-lg font-bold tracking-wide text-[#A51E23]">KWITANSI</h3>
+          <div className="relative h-44">
+            <img
+              className="absolute inset-0 h-full w-full object-cover object-top"
+              src={headerSrc}
+              alt="Invoice header"
+            />
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <h3 className="text-lg font-bold tracking-wide text-[#A51E23] text-center">KUITANSI</h3>
+          </div>
         <div className="mt-4 overflow-auto rounded-md border border-slate-300">
           <table className="w-full text-sm">
             <tbody>
@@ -943,7 +964,7 @@ function InvoicePreview({
                 <tr>
                   <td className="border-b border-slate-300 p-2">JUMLAH:</td>
                   <td className="border-b border-slate-300 p-2 font-semibold">
-                    {formatCurrency(data.total)}
+                    {formatCurrency(data.dpp)}
                   </td>
                 </tr>
                 <tr>

@@ -32,7 +32,7 @@ export function AdminHeader({ title, onOpenSidebar }: AdminHeaderProps) {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-card px-4 md:px-6 flex items-center justify-between sticky top-0 z-10">
+    <header className="h-16 border-b border-border bg-card px-4 md:px-6 flex items-center justify-between sticky top-0 z-10 dark:border-white/10 dark:bg-slate-900/12 dark:backdrop-blur-[36px] dark:backdrop-saturate-[180%]">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
@@ -55,7 +55,7 @@ export function AdminHeader({ title, onOpenSidebar }: AdminHeaderProps) {
           <Input
             type="search"
             placeholder="Search..."
-            className="w-64 pl-9 bg-background"
+            className="w-64 pl-9 bg-background dark:bg-slate-900/15 dark:backdrop-blur-2xl dark:border-white/10"
           />
         </div>
 

@@ -72,6 +72,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
     <aside
       className={cn(
         'bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-300',
+        'dark:bg-slate-900/12 dark:backdrop-blur-[36px] dark:backdrop-saturate-[180%] dark:border-r dark:border-white/10 dark:shadow-[0_20px_60px_-25px_rgba(0,0,0,0.45)]',
         variant === 'default' ? 'h-screen sticky top-0' : 'h-full',
         isCollapsed ? 'w-16' : 'w-64'
       )}
@@ -79,7 +80,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
       {/* Logo Section */}
       <div
         className={cn(
-          'p-4 border-b border-sidebar-border flex gap-3 relative',
+          'p-4 border-b border-sidebar-border flex gap-3 relative dark:border-white/10',
           isCollapsed ? 'flex-col items-center' : 'items-center justify-between'
         )}
       >
@@ -98,6 +99,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
             onClick={() => setCollapsed(!collapsed)}
             className={cn(
               'p-2 rounded-md hover:bg-sidebar-accent transition-colors absolute -right-3 top-16 z-20 bg-sidebar border border-sidebar-border shadow-md',
+              'dark:bg-slate-900/15 dark:border-white/15 dark:backdrop-blur-2xl',
               isCollapsed && 'mt-0'
             )}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -126,7 +128,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
                 <Link
                   href={item.href}
                   className={cn(
-                    'group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors',
+                    'group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-0',
                     'hover:bg-sidebar-accent',
                     isActive && 'bg-sidebar-accent font-medium'
                   )}
@@ -158,7 +160,7 @@ export function AdminSidebar({ variant = 'default', onNavigate }: AdminSidebarPr
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-sidebar-border px-4 py-3">
+      <div className="border-t border-sidebar-border px-4 py-3 dark:border-white/10">
         {isCollapsed ? (
           <button
             onClick={toggle}

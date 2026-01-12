@@ -49,8 +49,9 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex bg-background w-full">
-      <div className="hidden md:flex">
+    <div className="min-h-screen flex bg-background dark:bg-transparent w-full relative overflow-hidden">
+      <div className="starfield hidden dark:block" aria-hidden="true" />
+      <div className="hidden md:flex relative z-10">
         <AdminSidebar />
       </div>
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -61,7 +62,7 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
           />
         </SheetContent>
       </Sheet>
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10 bg-background dark:bg-transparent">
         <AdminHeader title={title} onOpenSidebar={() => setIsSidebarOpen(true)} />
         <main className="flex-1 p-4 md:p-6 overflow-auto">
           {children}

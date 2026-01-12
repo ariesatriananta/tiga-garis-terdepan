@@ -154,6 +154,49 @@ All colors MUST be HSL.
     background-size: 24px 24px, 36px 36px;
     animation: login-dots-drift 22s linear infinite;
   }
+
+  .starfield {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(1.3px 1.3px at 20px 30px, rgba(255, 255, 255, 0.95) 0, transparent 2px),
+      radial-gradient(1.3px 1.3px at 80px 120px, rgba(255, 226, 160, 0.9) 0, transparent 2px),
+      radial-gradient(1.3px 1.3px at 50px 200px, rgba(175, 215, 255, 0.9) 0, transparent 2px),
+      radial-gradient(1px 1px at 140px 80px, rgba(255, 214, 150, 0.8) 0, transparent 2px);
+    background-size: 90px 90px, 130px 130px, 170px 170px, 220px 220px;
+    animation: starfield-drift 120s linear infinite;
+  }
+
+  .starfield::before,
+  .starfield::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-repeat: repeat;
+    pointer-events: none;
+  }
+
+  .starfield::before {
+    background-image:
+      radial-gradient(2.6px 2.6px at 40px 60px, rgba(255, 255, 255, 0.85) 0, transparent 3px),
+      radial-gradient(2.2px 2.2px at 120px 180px, rgba(255, 214, 140, 0.8) 0, transparent 3px),
+      radial-gradient(2.2px 2.2px at 200px 30px, rgba(170, 210, 255, 0.8) 0, transparent 3px),
+      radial-gradient(2px 2px at 260px 120px, rgba(255, 235, 190, 0.75) 0, transparent 3px);
+    background-size: 160px 160px, 220px 220px, 280px 280px, 320px 320px;
+    animation: starfield-drift 180s linear infinite reverse;
+  }
+
+  .starfield::after {
+    background-image:
+      radial-gradient(1.3px 1.3px at 10px 20px, rgba(255, 255, 255, 0.75) 0, transparent 2px),
+      radial-gradient(1.3px 1.3px at 90px 60px, rgba(255, 224, 160, 0.7) 0, transparent 2px),
+      radial-gradient(1.3px 1.3px at 70px 140px, rgba(165, 205, 255, 0.7) 0, transparent 2px),
+      radial-gradient(1px 1px at 150px 100px, rgba(255, 220, 180, 0.65) 0, transparent 2px);
+    background-size: 80px 80px, 120px 120px, 160px 160px, 200px 200px;
+    animation: starfield-drift 90s linear infinite;
+  }
 }
 
 @keyframes login-dots-drift {
@@ -162,5 +205,14 @@ All colors MUST be HSL.
   }
   to {
     background-position: -240px 240px, 240px -240px;
+  }
+}
+
+@keyframes starfield-drift {
+  from {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  to {
+    background-position: -1200px 800px, 800px -1200px, -900px 1000px;
   }
 }

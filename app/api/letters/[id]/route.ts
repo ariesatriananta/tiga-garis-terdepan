@@ -8,7 +8,6 @@ import {
   letters,
   letterAssignments,
   letterAssignmentMembers,
-  settings,
 } from "@/lib/db/schema";
 import { generateLetterNumber, getJakartaMonthYear } from "@/lib/numbering";
 
@@ -192,16 +191,9 @@ export async function PUT(
   }
 
   const shouldRegenerate =
-    body.letterDate !== undefined ||
-    body.letterType !== undefined ||
-    body.hrgaCategory !== undefined;
+    body.letterDate !== undefined || body.letterType !== undefined;
   if (shouldRegenerate) {
     const { year } = getJakartaMonthYear(nextLetterDate);
-    const [settingsRow] = await db
-      .select({ numberingPrefix: settings.numberingPrefix })
-      .from(settings)
-      .limit(1);
-    const prefix = settingsRow?.numberingPrefix ?? "TGT-A.420";
     const allLetters = await db
       .select({
         id: letters.id,
@@ -215,10 +207,7 @@ export async function PUT(
       if (letter.id === existing.id) return false;
       const letterYear = getJakartaMonthYear(new Date(letter.letterDate)).year;
       if (letterYear !== year) return false;
-      if (nextLetterType === "HRGA") {
-        return letter.letterType === "HRGA";
-      }
-      return letter.letterType !== "HRGA";
+      return true;
     });
     const maxSeq = sameYearLetters.reduce(
       (acc, letter) => Math.max(acc, letter.seqNo ?? 0),
@@ -229,8 +218,6 @@ export async function PUT(
       seqNo,
       letterDate: nextLetterDate,
       letterType: nextLetterType,
-      prefix,
-      hrgaCategory: nextHrgaCategory ?? undefined,
     });
     updateData.seqNo = seqNo;
     updateData.letterNumber = letterNumber;

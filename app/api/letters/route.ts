@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic"
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { clients, letters, letterAssignments, letterAssignmentMembers, settings } from "@/lib/db/schema";
+import { clients, letters, letterAssignments, letterAssignmentMembers } from "@/lib/db/schema";
 import { generateLetterNumber, getJakartaMonthYear } from "@/lib/numbering";
 
 export async function GET() {
@@ -74,11 +74,6 @@ export async function POST(request: Request) {
   const letterDate = new Date(body.letterDate);
   const { year } = getJakartaMonthYear(letterDate);
   const db = getDb();
-  const [settingsRow] = await db
-    .select({ numberingPrefix: settings.numberingPrefix })
-    .from(settings)
-    .limit(1);
-  const prefix = settingsRow?.numberingPrefix ?? "TGT-A.420";
   const existingLetters = await db
     .select({
       letterDate: letters.letterDate,
@@ -88,14 +83,10 @@ export async function POST(request: Request) {
     })
     .from(letters);
 
-  const isHrga = body.letterType === "HRGA";
   const sameYearLetters = existingLetters.filter((letter) => {
     const letterYear = getJakartaMonthYear(new Date(letter.letterDate));
     if (letterYear.year !== year) return false;
-    if (isHrga) {
-      return letter.letterType === "HRGA";
-    }
-    return letter.letterType !== "HRGA";
+    return true;
   });
   const maxSeq = sameYearLetters.reduce(
     (acc, letter) => Math.max(acc, letter.seqNo ?? 0),
@@ -106,8 +97,6 @@ export async function POST(request: Request) {
     seqNo,
     letterDate,
     letterType: body.letterType,
-    prefix,
-    hrgaCategory: body.hrgaCategory,
   });
 
   const result = await db.transaction(async (tx) => {

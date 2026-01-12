@@ -97,30 +97,26 @@ export function generateInvoiceNumber(params: {
 
 /**
  * Generate letter number
- * Format: L.{SEQ}/{PREFIX}/{MONTH_ROMAN}/{YEAR}
- * Example: L.001/TGT-A.420/I/2026
+ * Format: L.{SEQ}/{TYPE}/{CODE}/{MONTH_ROMAN}/{YEAR}
+ * Example: L.001/HRGA/723/I/2026
  */
 export function generateLetterNumber(params: {
   seqNo: number;
   letterDate: Date;
-  letterType: 'HRGA' | 'UMUM' | 'SURAT_TUGAS';
-  prefix: string;
-  hrgaCategory?: 'PERMANEN' | 'NON_PERMANEN' | 'INTERNSHIP';
+  letterType: 'HRGA' | 'UMUM' | 'SURAT_TUGAS' | 'BERITA_ACARA';
 }): string {
-  const { seqNo, letterDate, letterType, prefix, hrgaCategory } = params;
+  const { seqNo, letterDate, letterType } = params;
   const { month, year } = getJakartaMonthYear(letterDate);
+  const typeCode =
+    letterType === 'SURAT_TUGAS'
+      ? 'ST'
+      : letterType === 'BERITA_ACARA'
+      ? 'BA'
+      : letterType === 'UMUM'
+      ? 'UM'
+      : 'HRGA';
 
-  if (letterType === 'HRGA') {
-    const categoryLabel =
-      hrgaCategory === 'NON_PERMANEN'
-        ? 'Employee-B'
-        : hrgaCategory === 'INTERNSHIP'
-        ? 'Employee-C'
-        : 'Employee-A';
-    return `${padSeq(seqNo)}/${prefix}/${categoryLabel}/${romanMonth(month)}/${year}`;
-  }
-
-  return `L.${padSeq(seqNo)}/${prefix}/${romanMonth(month)}/${year}`;
+  return `L.${padSeq(seqNo)}/${typeCode}/723/${romanMonth(month)}/${year}`;
 }
 
 /**

@@ -91,6 +91,7 @@ const letterTypeLabels: Record<LetterType, string> = {
   HRGA: 'HR/GA',
   UMUM: 'Umum',
   SURAT_TUGAS: 'Surat Tugas',
+  BERITA_ACARA: 'Berita Acara',
 };
 
 const hrgaCategoryLabels: Record<HrgaCategory, string> = {
@@ -682,6 +683,8 @@ export default function Letters() {
         return 'bg-success/10 text-success border-success/20';
       case 'SURAT_TUGAS':
         return 'bg-warning/10 text-warning border-warning/20';
+      case 'BERITA_ACARA':
+        return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
       default:
         return '';
     }
@@ -736,6 +739,7 @@ export default function Letters() {
                 <SelectItem value="HRGA">HR/GA</SelectItem>
                 <SelectItem value="UMUM">Umum</SelectItem>
                 <SelectItem value="SURAT_TUGAS">Surat Tugas</SelectItem>
+                <SelectItem value="BERITA_ACARA">Berita Acara</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -1001,6 +1005,7 @@ export default function Letters() {
                     <SelectItem value="HRGA">HR/GA</SelectItem>
                     <SelectItem value="UMUM">Umum</SelectItem>
                     <SelectItem value="SURAT_TUGAS">Surat Tugas</SelectItem>
+                    <SelectItem value="BERITA_ACARA">Berita Acara</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

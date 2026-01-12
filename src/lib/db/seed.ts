@@ -416,60 +416,15 @@ async function migrateNumbering() {
     .set({ letterType: "SURAT_TUGAS", updatedAt: new Date() })
     .where(eq(letters.letterType, "SURAT_JALAN"));
 
-  const hrgaByYear = new Map<number, typeof letterRows>();
-  const nonHrgaByYear = new Map<number, typeof letterRows>();
+  const lettersByYear = new Map<number, typeof letterRows>();
   for (const letter of letterRows) {
     const { year } = getJakartaMonthYear(new Date(letter.letterDate));
-    if (letter.letterType === "HRGA") {
-      const group = hrgaByYear.get(year) ?? [];
-      group.push(letter);
-      hrgaByYear.set(year, group);
-    } else {
-      const group = nonHrgaByYear.get(year) ?? [];
-      group.push(letter);
-      nonHrgaByYear.set(year, group);
-    }
+    const group = lettersByYear.get(year) ?? [];
+    group.push(letter);
+    lettersByYear.set(year, group);
   }
 
-  for (const items of hrgaByYear.values()) {
-    items.sort((a, b) => {
-      const timeDiff =
-        new Date(a.letterDate).getTime() - new Date(b.letterDate).getTime();
-      if (timeDiff !== 0) return timeDiff;
-      return a.id.localeCompare(b.id);
-    });
-    for (let index = 0; index < items.length; index += 1) {
-      const letter = items[index];
-      const rawCategory = letter.hrgaCategory ?? "";
-      const hrgaCategory =
-        rawCategory === "NON_PERMANEN" || rawCategory === "PERMANEN" || rawCategory === "INTERNSHIP"
-          ? rawCategory
-          : rawCategory === "EMPLOYEE"
-          ? "PERMANEN"
-          : rawCategory === "INTERNSHIP"
-          ? "INTERNSHIP"
-          : "PERMANEN";
-      const seqNo = index + 1;
-      const letterNumber = generateLetterNumber({
-        seqNo,
-        letterDate: new Date(letter.letterDate),
-        letterType: "HRGA",
-        prefix: "TGT-A.420",
-        hrgaCategory: hrgaCategory as "PERMANEN" | "NON_PERMANEN" | "INTERNSHIP",
-      });
-      await db
-        .update(letters)
-        .set({
-          seqNo,
-          letterNumber,
-          hrgaCategory,
-          updatedAt: new Date(),
-        })
-        .where(eq(letters.id, letter.id));
-    }
-  }
-
-  for (const items of nonHrgaByYear.values()) {
+  for (const items of lettersByYear.values()) {
     items.sort((a, b) => {
       const timeDiff =
         new Date(a.letterDate).getTime() - new Date(b.letterDate).getTime();
@@ -482,16 +437,39 @@ async function migrateNumbering() {
       const letterNumber = generateLetterNumber({
         seqNo,
         letterDate: new Date(letter.letterDate),
-        letterType: letter.letterType as "UMUM" | "SURAT_TUGAS",
-        prefix: "TGT-A.420",
+        letterType: letter.letterType as
+          | "HRGA"
+          | "UMUM"
+          | "SURAT_TUGAS"
+          | "BERITA_ACARA",
       });
+      const updateData: {
+        seqNo: number;
+        letterNumber: string;
+        updatedAt: Date;
+        hrgaCategory?: string | null;
+      } = {
+        seqNo,
+        letterNumber,
+        updatedAt: new Date(),
+      };
+      if (letter.letterType === "HRGA") {
+        const rawCategory = letter.hrgaCategory ?? "";
+        const hrgaCategory =
+          rawCategory === "NON_PERMANEN" ||
+          rawCategory === "PERMANEN" ||
+          rawCategory === "INTERNSHIP"
+            ? rawCategory
+            : rawCategory === "EMPLOYEE"
+            ? "PERMANEN"
+            : rawCategory === "INTERNSHIP"
+            ? "INTERNSHIP"
+            : "PERMANEN";
+        updateData.hrgaCategory = hrgaCategory;
+      }
       await db
         .update(letters)
-        .set({
-          seqNo,
-          letterNumber,
-          updatedAt: new Date(),
-        })
+        .set(updateData)
         .where(eq(letters.id, letter.id));
     }
   }

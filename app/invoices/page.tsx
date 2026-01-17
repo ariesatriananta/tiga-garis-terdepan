@@ -379,7 +379,7 @@ export default function Invoices() {
               .totals td { border: none; padding: 6px 8px; }
               .totals tr + tr td { border-top: 1px solid var(--border); }
               .note { font-size: 12px; }
-              .sign { text-align: left; font-size: 14px; }
+              .sign { text-align: right; font-size: 14px; }
               
               .note-table td { border: none; padding: 10px; vertical-align: bottom; }
               .kw-title { text-align: center; font-size: 16px; font-weight: 700; margin-top: 8px; }
@@ -389,7 +389,7 @@ export default function Invoices() {
               .kw-label { width: 180px; }
             .kw-box { border: 0.5px solid var(--border); padding: 6px 10px; display: inline-block; }
             .kw-amount { font-size: 14px; font-weight: 700; }
-            .spacer { height: 70px; }
+            .spacer { height: 100px; }
             .watermark {
               position: absolute;
               inset: 0;
@@ -412,7 +412,7 @@ export default function Invoices() {
               <div class="header-content">
               </div>
             </div>
-            <div style="font-size:14px;">
+              <div style="font-size:14px; margin-top:-20mm;">
               <div>
                 <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>
@@ -462,10 +462,12 @@ export default function Invoices() {
                 <tr><td>Branch</td><td>:</td><td>${selectedBank.branch}</td></tr>
                 <tr><td>A/C</td><td>:</td><td>${selectedBank.account}</td></tr>
               </table>
-              <div style="margin-top:18px;">Thank you for your kind attention and co-operation</div>
-              <div>Your faithfully,</div>
-              <div style="margin-top:70px;">${data.signerName}</div>
-              <div>${data.signerTitle}</div>
+              <div style="margin-top:18px; text-align:right;">
+                <div>Thank you for your kind attention and co-operation</div>
+                <div>Your faithfully,</div>
+                <div style="margin-top:100px;">${data.signerName}</div>
+                <div>${data.signerTitle}</div>
+              </div>
             </div>
             <img class="footer-image" src="${footerUrl}" alt="Footer" />
           </div>
@@ -476,7 +478,7 @@ export default function Invoices() {
                     <div class="title">KUITANSI</div>
                 </div>
               </div>
-              <div class="box" style="margin-top:44px;">
+              <div class="box" style="margin-top:24px;">
               <table class="kw-table">
               <tr>
                 <td class="kw-label">No:</td>
@@ -488,7 +490,7 @@ export default function Invoices() {
               </tr>
               <tr>
                 <td class="kw-label">UANG SEJUMLAH:</td>
-                <td><span class="kw-box">#${data.terbilang}#</span></td>
+                <td><span class="kw-box">#${data.terbilang} RUPIAH#</span></td>
               </tr>
               <tr>
                 <td class="kw-label">UNTUK PEMBAYARAN:</td>
@@ -822,7 +824,7 @@ function InvoicePreview({
                 style={{ backgroundImage: `url(${headerSrc})` }}
                 />
             </div>
-          <div className="mt-4 text-sm">
+          <div className="mt-2 text-sm -mt-6">
             <div className="flex flex-col gap-4 md:flex-row md:justify-between">
               <div className="space-y-1">
                 <p className="font-semibold">To:</p>
@@ -915,10 +917,11 @@ function InvoicePreview({
                 </div>
               </div>
             </div>
-            <div className="mt-6 text-sm">
+            <div className="mt-6 text-sm text-right">
               <p>Thank you for your kind attention and co-operation</p>
               <p>Your faithfully,</p>
-              <div className="mt-10">
+              <div className="mt-6 h-16" />
+              <div>
                 <p>{data.signerName}</p>
                 <p>{data.signerTitle}</p>
               </div>
@@ -952,7 +955,7 @@ function InvoicePreview({
                 <tr>
                   <td className="border-b border-slate-300 p-2">UANG SEJUMLAH:</td>
                   <td className="border-b border-slate-300 p-2 font-semibold">
-                    #{data.terbilang}#
+                    #{data.terbilang} RUPIAH#
                   </td>
                 </tr>
                 <tr>
@@ -971,9 +974,10 @@ function InvoicePreview({
                   <td className="border-b border-slate-300 p-2"></td>
                   <td className="border-b border-slate-300 p-2 text-right">
                     <p>Jakarta, {data.invoiceDate}</p>
-                  <div className="h-28" />
-                  <p>{data.signerName}</p>
-                </td>
+                    <div className="h-40" />
+                    <p>{data.signerName}</p>
+                    <p>{data.signerTitle}</p>
+                  </td>
               </tr>
             </tbody>
           </table>

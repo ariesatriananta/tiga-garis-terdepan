@@ -380,6 +380,8 @@ export default function Invoices() {
               .totals tr + tr td { border-top: 1px solid var(--border); }
               .note { font-size: 12px; }
               .sign { text-align: right; font-size: 14px; }
+              .sign-block { width: 220px; margin-left: auto; text-align: right; }
+              .sign-name, .sign-title { display: block; text-align: center; padding-left: 75px; }
               
               .note-table td { border: none; padding: 10px; vertical-align: bottom; }
               .kw-title { text-align: center; font-size: 16px; font-weight: 700; margin-top: 8px; }
@@ -462,7 +464,7 @@ export default function Invoices() {
                 <tr><td>Branch</td><td>:</td><td>${selectedBank.branch}</td></tr>
                 <tr><td>A/C</td><td>:</td><td>${selectedBank.account}</td></tr>
               </table>
-              <div style="margin-top:18px; text-align:right;">
+              <div style="margin-top:18px; text-align:left;">
                 <div>Thank you for your kind attention and co-operation</div>
                 <div>Your faithfully,</div>
                 <div style="margin-top:100px;">${data.signerName}</div>
@@ -503,10 +505,12 @@ export default function Invoices() {
               <tr>
                 <td></td>
                 <td class="sign">
-                  <div>Jakarta, ${data.invoiceDate}</div>
-                  <div class="spacer"></div>
-                  <div>${data.signerName}</div>
-                  <div>${data.signerTitle}</div>
+                  <div class="sign-block">
+                    <div>Jakarta, 16 Januari 2026</div>
+                    <div class="spacer"></div>
+                    <div class="sign-name">${data.signerName}</div>
+                    <div class="sign-title">${data.signerTitle}</div>
+                  </div>
                 </td>
               </tr>
               </table>
@@ -917,7 +921,7 @@ function InvoicePreview({
                 </div>
               </div>
             </div>
-            <div className="mt-6 text-sm text-right">
+            <div className="mt-6 text-sm text-left">
               <p>Thank you for your kind attention and co-operation</p>
               <p>Your faithfully,</p>
               <div className="mt-6 h-16" />
@@ -973,10 +977,12 @@ function InvoicePreview({
                 <tr>
                   <td className="border-b border-slate-300 p-2"></td>
                   <td className="border-b border-slate-300 p-2 text-right">
-                    <p>Jakarta, {data.invoiceDate}</p>
-                    <div className="h-40" />
-                    <p>{data.signerName}</p>
-                    <p>{data.signerTitle}</p>
+                    <div className="ml-auto w-56 text-right">
+                      <p>Jakarta, 16 Januari 2026</p>
+                      <div className="h-40" />
+                      <p className="text-center pl-4">{data.signerName}</p>
+                      <p className="text-center pl-4">{data.signerTitle}</p>
+                    </div>
                   </td>
               </tr>
             </tbody>

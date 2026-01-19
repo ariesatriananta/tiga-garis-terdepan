@@ -414,7 +414,7 @@ export default function Invoices() {
               <div class="header-content">
               </div>
             </div>
-              <div style="font-size:14px; margin-top:-20mm;">
+              <div style="font-size:14px; margin-top:-10mm;">
               <div>
                 <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>

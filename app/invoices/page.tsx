@@ -444,12 +444,18 @@ export default function Invoices() {
               </div>
               <table style="width:100%; margin-top:14px; font-size:14px;">
                 <tr>
-                  <td style="border-bottom:1px dashed #111; padding:6px 0;">${terminLabel}</td>
-                  <td style="border-bottom:1px dashed #111; padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
+                  <td style="padding:6px 0;">${terminLabel}</td>
+                  <td style="padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
                 </tr>
                 <tr>
-                  <td style="padding:6px 0; font-weight:600; border-bottom:3px double #111;">Total</td>
-                  <td style="padding:6px 0; text-align:right; font-weight:600; border-bottom:3px double #111;">${formatCurrency(data.dpp)}</td>
+                  <td colspan="2" style="border-top:1px solid #111; height:0; padding:0;"></td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0; font-weight:600;">Total</td>
+                  <td style="padding:6px 0; text-align:right; font-weight:600;">${formatCurrency(data.dpp)}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="border-top:3px double #111; height:0;"></td>
                 </tr>
               </table>
               <div style="margin-top:10px; font-size:11px; font-style: italic;">
@@ -861,7 +867,7 @@ function InvoicePreview({
             </div>
             <div className="mt-2 font-semibold underline">{data.contractTitle}</div>
             <div className="mt-4">
-              <div className="flex items-center justify-between border-b border-dashed border-[#A51E23] py-2">
+              <div className="flex items-center justify-between border-b border-[#A51E23] py-2">
                 <span>{data.terminName}</span>
                 <span>{formatCurrency(data.dpp)}</span>
               </div>

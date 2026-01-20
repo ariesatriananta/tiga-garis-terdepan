@@ -426,7 +426,7 @@ export default function Invoices() {
                   <tr>
                     <td style="width:70px;">No</td>
                     <td style="width:10px;">:</td>
-                    <td>${data.contractNumber}</td>
+                    <td>${data.invoiceNumber}</td>
                       <td style="text-align:right;">Reff</td>
                       <td style="width:6px; text-align:right;">:</td>
                       <td style="width:165px; text-align:right;">${data.contractNumber}</td>
@@ -444,15 +444,15 @@ export default function Invoices() {
               </div>
               <table style="width:100%; margin-top:14px; font-size:14px;">
                 <tr>
-                  <td style="border-bottom:1px solid #111; padding:6px 0;">${terminLabel}</td>
-                  <td style="border-bottom:1px solid #111; padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
+                  <td style="border-bottom:1px dashed #111; padding:6px 0;">${terminLabel}</td>
+                  <td style="border-bottom:1px dashed #111; padding:6px 0; text-align:right;">${formatCurrency(data.dpp)}</td>
                 </tr>
                 <tr>
-                  <td style="padding:6px 0; font-weight:600;">Total</td>
-                  <td style="padding:6px 0; text-align:right; font-weight:600;">${formatCurrency(data.dpp)}</td>
+                  <td style="padding:6px 0; font-weight:600; border-bottom:3px double #111;">Total</td>
+                  <td style="padding:6px 0; text-align:right; font-weight:600; border-bottom:3px double #111;">${formatCurrency(data.dpp)}</td>
                 </tr>
               </table>
-              <div style="margin-top:10px; font-size:12px;">
+              <div style="margin-top:10px; font-size:11px; font-style: italic;">
                 <div>* The service fee includes the applicable tax (PPH 23).</div>
                 <div>* PT Tiga Garis Terdepan does not charge VAT for its services because the Company is a Taxable Entrepreneur (Non PKP).</div>
               </div>
@@ -841,7 +841,7 @@ function InvoicePreview({
                   <div className="flex items-center gap-2">
                     <span className="min-w-[80px] font-semibold">No</span>
                     <span className="w-3 text-center">:</span>
-                    <span>{data.contractNumber}</span>
+                    <span>{data.invoiceNumber}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="min-w-[80px] font-semibold">Date</span>
@@ -861,7 +861,7 @@ function InvoicePreview({
             </div>
             <div className="mt-2 font-semibold underline">{data.contractTitle}</div>
             <div className="mt-4">
-              <div className="flex items-center justify-between border-b border-[#A51E23] py-2">
+              <div className="flex items-center justify-between border-b border-dashed border-[#A51E23] py-2">
                 <span>{data.terminName}</span>
                 <span>{formatCurrency(data.dpp)}</span>
               </div>
@@ -869,8 +869,9 @@ function InvoicePreview({
                 <span>Total</span>
                 <span>{formatCurrency(data.dpp)}</span>
               </div>
+              <div className="border-t-4 border-double border-[#A51E23]" />
             </div>
-            <div className="mt-2 text-xs italic">
+            <div className="mt-2 text-[10px] italic">
               <div>* The service fee includes the applicable tax (PPH 23).</div>
               <div>
                 * PT Tiga Garis Terdepan does not charge VAT for its services because the

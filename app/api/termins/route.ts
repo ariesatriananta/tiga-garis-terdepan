@@ -65,6 +65,36 @@ export async function POST(request: Request) {
 
   const now = new Date();
   const db = getDb();
+  const [contract] = await db
+    .select({ contractValue: contracts.contractValue })
+    .from(contracts)
+    .where(eq(contracts.id, body.contractId))
+    .limit(1);
+  if (!contract) {
+    return NextResponse.json({ error: "Kontrak tidak ditemukan" }, { status: 404 });
+  }
+  const contractValue = Number(contract.contractValue ?? 0);
+  const [summary] = await db
+    .select({
+      totalTermins: sql<string>`coalesce(sum(${termins.terminAmount}), 0)`,
+    })
+    .from(termins)
+    .where(eq(termins.contractId, body.contractId));
+  const totalTermins = Number(summary?.totalTermins ?? 0);
+  const remaining = contractValue - totalTermins;
+  const incomingAmount = Number(body.terminAmount ?? 0);
+  if (remaining <= 0) {
+    return NextResponse.json(
+      { error: "Total termin sudah mencapai nilai kontrak" },
+      { status: 400 }
+    );
+  }
+  if (incomingAmount > remaining) {
+    return NextResponse.json(
+      { error: "Nominal termin melebihi sisa nilai kontrak" },
+      { status: 400 }
+    );
+  }
   const [created] = await db
     .insert(termins)
     .values({

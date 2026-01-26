@@ -439,7 +439,7 @@ export default function Invoices() {
                 </table>
               </div>
               <div style="margin-top:12px;">We would like to request the following payment for:</div>
-              <div style="margin-top:6px; font-weight:600; text-decoration: underline;">
+              <div style="margin-top:6px; font-weight:600;">
                 ${data.contractTitle}
               </div>
               <table style="width:100%; margin-top:14px; font-size:14px;">
@@ -512,7 +512,7 @@ export default function Invoices() {
                 <td></td>
                 <td class="sign">
                   <div class="sign-block">
-                    <div>Jakarta, 16 Januari 2026</div>
+                    <div>Jakarta, ${data.invoiceDate}</div>
                     <div class="spacer"></div>
                     <div class="sign-name">${data.signerName}</div>
                     <div class="sign-title">${data.signerTitle}</div>
@@ -865,7 +865,7 @@ function InvoicePreview({
             <div className="mt-3 border-b border-t border-[#A51E23] py-2">
               We would like to request the following payment for:
             </div>
-            <div className="mt-2 font-semibold underline">{data.contractTitle}</div>
+            <div className="mt-2 font-semibold">{data.contractTitle}</div>
             <div className="mt-4">
               <div className="flex items-center justify-between border-b border-[#A51E23] py-2">
                 <span>{data.terminName}</span>
@@ -985,7 +985,7 @@ function InvoicePreview({
                   <td className="border-b border-slate-300 p-2"></td>
                   <td className="border-b border-slate-300 p-2 text-right">
                     <div className="ml-auto w-56 text-right">
-                      <p>Jakarta, 16 Januari 2026</p>
+                      <p>Jakarta, {data.invoiceDate}</p>
                       <div className="h-40" />
                       <p className="text-center pl-4">{data.signerName}</p>
                       <p className="text-center pl-4">{data.signerTitle}</p>

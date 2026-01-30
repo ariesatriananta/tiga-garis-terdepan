@@ -68,7 +68,7 @@ export default function Invoices() {
       id: 'mandiri-arteri',
       bank: 'Bank Mandiri',
       branch: 'KCP Jakarta Arteri Pondok Indah',
-      account: '1010-0333-303-304',
+      account: '1010-033-303-304',
     },
     {
       id: 'mandiri-depok',

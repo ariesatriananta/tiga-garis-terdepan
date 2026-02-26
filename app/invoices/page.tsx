@@ -340,8 +340,8 @@ export default function Invoices() {
           <style>
               @page { size: A4; margin: 20mm; }
               :root { --primary: #A51E23; --primary-soft: #f7e6e7; --border: #94a3b8; --muted: #6b7280; }
-            body { font-family: "Segoe UI", Arial, sans-serif; color: #111; background: #fff; }
-            .page { page-break-after: always; position: relative; }
+            body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; color: #111; background: #fff; }
+            .page { page-break-after: always; position: relative; min-height: calc(297mm - 40mm); box-sizing: border-box; }
             .header { position: relative; height: 180px; margin-bottom: 18px; }
             .header-bg { position: absolute; inset: 0; background-image: url('${headerUrl}'); background-size: cover; background-position: top center; }
             .header-content { position: relative; padding-top: 175px; }
@@ -351,6 +351,9 @@ export default function Invoices() {
             }
             .title { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--primary); text-align: center; }
             .footer-image { margin-top: 32px; width: 100%; height: auto; }
+            .invoice-page { display: flex; flex-direction: column; }
+            .invoice-body { flex: 1 1 auto; min-height: 0; }
+            .invoice-footer { margin-top: auto; }
             .meta { display: flex; justify-content: space-between; margin-top: 46px; font-size: 14px; }
             .meta .left { max-width: 60%; }
               .box {
@@ -408,14 +411,14 @@ export default function Invoices() {
           </style>
         </head>
         <body>
-          <div class="page">
+          <div class="page invoice-page">
             <div class="watermark">INVOICE</div>
             <div class="header">
               <div class="header-bg"></div>
               <div class="header-content">
               </div>
             </div>
-              <div style="font-size:14px; margin-top:-10mm;">
+            <div class="invoice-body" style="font-size:14px; margin-top:-10mm;">
               <div style="max-width: 36%;">
                 <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>
@@ -478,7 +481,7 @@ export default function Invoices() {
                 <div>${data.signerTitle}</div>
               </div>
             </div>
-            <img class="footer-image" src="${footerUrl}" alt="Footer" />
+            <img class="footer-image invoice-footer" src="${footerUrl}" alt="Footer" />
           </div>
           <div class="page">
               <div class="header">

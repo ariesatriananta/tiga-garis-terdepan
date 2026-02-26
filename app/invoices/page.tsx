@@ -380,8 +380,9 @@ export default function Invoices() {
               .totals tr + tr td { border-top: 1px solid var(--border); }
               .note { font-size: 12px; }
               .sign { text-align: right; font-size: 14px; }
-              .sign-block { width: 220px; margin-left: auto; text-align: right; }
-              .sign-name, .sign-title { display: block; text-align: center; padding-left: 75px; }
+              .sign-block { width: 300px; margin-left: auto; text-align: right; }
+              .sign-name, .sign-title { display: block; text-align: right; padding-left: 0; }
+              .sign-name { white-space: nowrap; font-size: 13px; }
               
               .note-table td { border: none; padding: 10px; vertical-align: bottom; }
               .kw-title { text-align: center; font-size: 16px; font-weight: 700; margin-top: 8px; }
@@ -415,10 +416,10 @@ export default function Invoices() {
               </div>
             </div>
               <div style="font-size:14px; margin-top:-10mm;">
-              <div>
+              <div style="max-width: 36%;">
                 <div><strong>To:</strong></div>
                 <div><strong>${data.clientName}</strong></div>
-                <div>${data.clientAddress}</div>
+                <div style="word-break: break-word; line-height: 1.35;">${data.clientAddress}</div>
               </div>
               <div style="margin-top:12px;"><strong>Attn:</strong> ${data.clientPic}</div>
               <div style="margin-top:12px; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 8px 0;">
@@ -473,7 +474,7 @@ export default function Invoices() {
               <div style="margin-top:18px; text-align:left;">
                 <div>Thank you for your kind attention and co-operation</div>
                 <div>Your faithfully,</div>
-                <div style="margin-top:100px;">${data.signerName}</div>
+                <div style="margin-top:135px;">${data.signerName}</div>
                 <div>${data.signerTitle}</div>
               </div>
             </div>
@@ -836,10 +837,10 @@ function InvoicePreview({
             </div>
           <div className="mt-2 text-sm -mt-6">
             <div className="flex flex-col gap-4 md:flex-row md:justify-between">
-              <div className="space-y-1">
+              <div className="max-w-[36%] space-y-1">
                 <p className="font-semibold">To:</p>
                 <p className="font-semibold">{data.clientName}</p>
-                <p>{data.clientAddress}</p>
+                <p className="break-words leading-snug">{data.clientAddress}</p>
                 <p className="pt-2 font-semibold">Attn: {data.clientPic}</p>
               </div>
               <div className="text-left md:text-right">
@@ -931,7 +932,7 @@ function InvoicePreview({
             <div className="mt-6 text-sm text-left">
               <p>Thank you for your kind attention and co-operation</p>
               <p>Your faithfully,</p>
-              <div className="mt-6 h-16" />
+              <div className="mt-6 h-24" />
               <div>
                 <p>{data.signerName}</p>
                 <p>{data.signerTitle}</p>
@@ -984,11 +985,11 @@ function InvoicePreview({
                 <tr>
                   <td className="border-b border-slate-300 p-2"></td>
                   <td className="border-b border-slate-300 p-2 text-right">
-                    <div className="ml-auto w-56 text-right">
+                    <div className="ml-auto w-72 text-right">
                       <p>Jakarta, {data.invoiceDate}</p>
                       <div className="h-40" />
-                      <p className="text-center pl-4">{data.signerName}</p>
-                      <p className="text-center pl-4">{data.signerTitle}</p>
+                      <p className="whitespace-nowrap text-right text-[13px]">{data.signerName}</p>
+                      <p className="text-right">{data.signerTitle}</p>
                     </div>
                   </td>
               </tr>

@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic"
 
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { invoices } from "@/lib/db/schema";
+import { contracts, invoices } from "@/lib/db/schema";
+import { generateInvoiceNumber, getJakartaMonthYear } from "@/lib/numbering";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -30,8 +31,6 @@ export async function POST(request: Request) {
     !body?.contractId ||
     !body?.terminId ||
     !body?.invoiceDate ||
-    body?.seqNo === undefined ||
-    !body?.invoiceNumber ||
     body?.amount === undefined ||
     !body?.status
   ) {
@@ -43,21 +42,61 @@ export async function POST(request: Request) {
 
   const now = new Date();
   const db = getDb();
-  const [created] = await db
-    .insert(invoices)
-    .values({
-      id: crypto.randomUUID(),
-      invoiceDate: new Date(body.invoiceDate),
-      contractId: body.contractId,
-      terminId: body.terminId,
-      seqNo: Number(body.seqNo),
-      invoiceNumber: body.invoiceNumber,
-      amount: body.amount.toString(),
-      status: body.status,
-      createdAt: now,
-      updatedAt: now,
+  const invoiceDate = new Date(body.invoiceDate);
+  const { year } = getJakartaMonthYear(invoiceDate);
+  const [contractRow] = await db
+    .select({
+      serviceCode: contracts.serviceCode,
+      submissionCode: contracts.submissionCode,
     })
-    .returning();
+    .from(contracts)
+    .where(eq(contracts.id, body.contractId))
+    .limit(1);
+
+  if (!contractRow) {
+    return NextResponse.json({ error: "Kontrak tidak ditemukan" }, { status: 404 });
+  }
+
+  const created = await db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(2027, ${year})`);
+
+    const existingInvoices = await tx
+      .select({ invoiceDate: invoices.invoiceDate, seqNo: invoices.seqNo })
+      .from(invoices);
+    const sameYearInvoices = existingInvoices.filter((invoice) => {
+      const invoiceYear = getJakartaMonthYear(new Date(invoice.invoiceDate)).year;
+      return invoiceYear === year;
+    });
+    const maxSeq = sameYearInvoices.reduce(
+      (acc, invoice) => Math.max(acc, invoice.seqNo ?? 0),
+      0
+    );
+    const seqNo = maxSeq + 1;
+    const invoiceNumber = generateInvoiceNumber({
+      seqNo,
+      invoiceDate,
+      serviceCode: contractRow.serviceCode as "A" | "B" | "C",
+      submissionCode: contractRow.submissionCode,
+    });
+
+    const [row] = await tx
+      .insert(invoices)
+      .values({
+        id: crypto.randomUUID(),
+        invoiceDate,
+        contractId: body.contractId,
+        terminId: body.terminId,
+        seqNo,
+        invoiceNumber,
+        amount: body.amount.toString(),
+        status: body.status,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
+
+    return row;
+  });
 
   return NextResponse.json(created, { status: 201 });
 }

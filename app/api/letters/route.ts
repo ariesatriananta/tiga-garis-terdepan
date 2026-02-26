@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic"
 
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { clients, letters, letterAssignments, letterAssignmentMembers } from "@/lib/db/schema";
 import { generateLetterNumber, getJakartaMonthYear } from "@/lib/numbering";
@@ -74,32 +74,32 @@ export async function POST(request: Request) {
   const letterDate = new Date(body.letterDate);
   const { year } = getJakartaMonthYear(letterDate);
   const db = getDb();
-  const existingLetters = await db
-    .select({
-      letterDate: letters.letterDate,
-      seqNo: letters.seqNo,
-      letterType: letters.letterType,
-      hrgaCategory: letters.hrgaCategory,
-    })
-    .from(letters);
-
-  const sameYearLetters = existingLetters.filter((letter) => {
-    const letterYear = getJakartaMonthYear(new Date(letter.letterDate));
-    if (letterYear.year !== year) return false;
-    return true;
-  });
-  const maxSeq = sameYearLetters.reduce(
-    (acc, letter) => Math.max(acc, letter.seqNo ?? 0),
-    0
-  );
-  const seqNo = maxSeq + 1;
-  const letterNumber = generateLetterNumber({
-    seqNo,
-    letterDate,
-    letterType: body.letterType,
-  });
 
   const result = await db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(2028, ${year})`);
+
+    const existingLetters = await tx
+      .select({
+        letterDate: letters.letterDate,
+        seqNo: letters.seqNo,
+      })
+      .from(letters);
+
+    const sameYearLetters = existingLetters.filter((letter) => {
+      const letterYear = getJakartaMonthYear(new Date(letter.letterDate));
+      return letterYear.year === year;
+    });
+    const maxSeq = sameYearLetters.reduce(
+      (acc, letter) => Math.max(acc, letter.seqNo ?? 0),
+      0
+    );
+    const seqNo = maxSeq + 1;
+    const letterNumber = generateLetterNumber({
+      seqNo,
+      letterDate,
+      letterType: body.letterType,
+    });
+
     const [created] = await tx
       .insert(letters)
       .values({

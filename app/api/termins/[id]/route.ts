@@ -90,52 +90,68 @@ export async function PUT(
     if (contractRow) {
       const invoiceDate = updated.dueDate ? new Date(updated.dueDate) : new Date();
       const { year } = getJakartaMonthYear(invoiceDate);
-      const existingInvoices = await db
-        .select({ invoiceDate: invoices.invoiceDate, seqNo: invoices.seqNo })
-        .from(invoices);
 
-      const sameYearInvoices = existingInvoices.filter((invoice) => {
-        const invoiceMonthYear = getJakartaMonthYear(new Date(invoice.invoiceDate));
-        return invoiceMonthYear.year === year;
-      });
-      const maxSeq = sameYearInvoices.reduce(
-        (acc, invoice) => Math.max(acc, invoice.seqNo ?? 0),
-        0
-      );
-      const seqNo = maxSeq + 1;
-      const invoiceNumber = generateInvoiceNumber({
-        seqNo,
-        invoiceDate,
-        serviceCode: contractRow.serviceCode as "A" | "B" | "C",
-        submissionCode: contractRow.submissionCode,
-      });
+      const result = await db.transaction(async (tx) => {
+        await tx.execute(sql`select pg_advisory_xact_lock(2027, ${year})`);
 
-      const [createdInvoice] = await db
-        .insert(invoices)
-        .values({
-          id: crypto.randomUUID(),
-          invoiceDate,
-          contractId: contractRow.contractId,
-          terminId: updated.id,
+        const [latestTermin] = await tx
+          .select({ id: termins.id, invoiceId: termins.invoiceId })
+          .from(termins)
+          .where(eq(termins.id, updated.id))
+          .limit(1);
+        if (!latestTermin || latestTermin.invoiceId) {
+          return null;
+        }
+
+        const existingInvoices = await tx
+          .select({ invoiceDate: invoices.invoiceDate, seqNo: invoices.seqNo })
+          .from(invoices);
+
+        const sameYearInvoices = existingInvoices.filter((invoice) => {
+          const invoiceMonthYear = getJakartaMonthYear(new Date(invoice.invoiceDate));
+          return invoiceMonthYear.year === year;
+        });
+        const maxSeq = sameYearInvoices.reduce(
+          (acc, invoice) => Math.max(acc, invoice.seqNo ?? 0),
+          0
+        );
+        const seqNo = maxSeq + 1;
+        const invoiceNumber = generateInvoiceNumber({
           seqNo,
-          invoiceNumber,
-          amount: updated.terminAmount.toString(),
-          status: "ISSUED",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .returning();
+          invoiceDate,
+          serviceCode: contractRow.serviceCode as "A" | "B" | "C",
+          submissionCode: contractRow.submissionCode,
+        });
 
-      if (createdInvoice) {
-        const [terminWithInvoice] = await db
+        const [createdInvoice] = await tx
+          .insert(invoices)
+          .values({
+            id: crypto.randomUUID(),
+            invoiceDate,
+            contractId: contractRow.contractId,
+            terminId: updated.id,
+            seqNo,
+            invoiceNumber,
+            amount: updated.terminAmount.toString(),
+            status: "ISSUED",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .returning();
+
+        if (!createdInvoice) return null;
+
+        const [terminWithInvoice] = await tx
           .update(termins)
           .set({ invoiceId: createdInvoice.id, updatedAt: new Date() })
           .where(eq(termins.id, updated.id))
           .returning();
 
-        if (terminWithInvoice) {
-          finalTermin = terminWithInvoice;
-        }
+        return terminWithInvoice ?? null;
+      });
+
+      if (result) {
+        finalTermin = result;
       }
     }
   }
